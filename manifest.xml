@@ -1,0 +1,40 @@
+<package version="0.0">
+  <name>org.openxtalk.widget.oxtslider</name>
+  <title>OXT Slider</title>
+  <author>Paul McClernan</author>
+  <version>0.1</version>
+  <license>community</license>
+  <type>widget</type>
+  <requires name="com.livecode.canvas"/>
+  <requires name="com.livecode.widget"/>
+  <requires name="com.livecode.arithmetic"/>
+  <requires name="com.livecode.binary"/>
+  <requires name="com.livecode.list"/>
+  <requires name="com.livecode.logic"/>
+  <requires name="com.livecode.string"/>
+  <requires name="com.livecode.type"/>
+  <requires name="com.livecode.engine"/>
+  <requires name="com.livecode.byte"/>
+  <metadata key="preferredSize">64,256</metadata>
+  <property name="onlyFillWhileMoving" get="boolean" set="boolean"/>
+  <metadata key="onlyFillWhileMoving.editor">com.livecode.pi.boolean</metadata>
+  <metadata key="onlyFillWhileMoving.label">Only fill while moving</metadata>
+  <metadata key="onlyFillWhileMoving.default">false</metadata>
+  <metadata key="onlyFillWhileMoving.section">Basic</metadata>
+  <handler name="setOnlyFillWhileMoving" parameters="in boolean" return="any"/>
+  <property name="horizontalOrentation" get="boolean" set="boolean"/>
+  <metadata key="horizontalOrentation.editor">com.livecode.pi.boolean</metadata>
+  <metadata key="horizontalOrentation.label">Horizontal orientation</metadata>
+  <metadata key="horizontalOrentation.default">false</metadata>
+  <metadata key="horizontalOrentation.section">Basic</metadata>
+  <handler name="setHorizOrientation" parameters="in boolean" return="any"/>
+  <handler name="OnPaint" parameters="" return="any"/>
+  <handler name="OnMouseUp" parameters="" return="any"/>
+  <handler name="OnMouseDown" parameters="" return="any"/>
+  <handler name="OnMouseMove" parameters="" return="any"/>
+  <handler name="OnMouseCancel" parameters="" return="any"/>
+  <handler name="OnCreate" parameters="" return="any"/>
+  <handler name="OnGeometryChanged" parameters="" return="any"/>
+  <handler name="OnOpen" parameters="" return="any"/>
+  <handler name="hitTestPath" parameters="in Point,in Path,in number,in boolean" return="boolean"/>
+</package>
