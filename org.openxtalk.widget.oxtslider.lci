@@ -1,5 +1,6 @@
 import module org.openxtalk.widget.oxtslider
   use com.livecode.canvas
+  use com.livecode.library.widgetutils
   use com.livecode.widget
   use com.livecode.arithmetic
   use com.livecode.binary

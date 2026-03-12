@@ -6,6 +6,7 @@
   <license>community</license>
   <type>widget</type>
   <requires name="com.livecode.canvas"/>
+  <requires name="com.livecode.library.widgetutils"/>
   <requires name="com.livecode.widget"/>
   <requires name="com.livecode.arithmetic"/>
   <requires name="com.livecode.binary"/>
@@ -25,9 +26,71 @@
   <property name="horizontalOrentation" get="boolean" set="boolean"/>
   <metadata key="horizontalOrentation.editor">com.livecode.pi.boolean</metadata>
   <metadata key="horizontalOrentation.label">Horizontal orientation</metadata>
-  <metadata key="horizontalOrentation.default">false</metadata>
+  <metadata key="horizontalOrentation.default">true</metadata>
   <metadata key="horizontalOrentation.section">Basic</metadata>
   <handler name="setHorizOrientation" parameters="in boolean" return="any"/>
+  <metadata key="foregroundColor.editor">com.livecode.pi.color</metadata>
+  <metadata key="foregroundColor.default"></metadata>
+  <metadata key="foregroundColor.section">Colors</metadata>
+  <metadata key="foregroundColor.label">foregroundColor</metadata>
+  <metadata key="backgroundColor.editor">com.livecode.pi.color</metadata>
+  <metadata key="backgroundColor.default"></metadata>
+  <metadata key="backgroundColor.section">Colors</metadata>
+  <metadata key="backgroundColor.label">backgroundColor</metadata>
+  <metadata key="hiliteColor.editor">com.livecode.pi.color</metadata>
+  <metadata key="hiliteColor.default"></metadata>
+  <metadata key="hiliteColor.section">Colors</metadata>
+  <metadata key="hiliteColor.label">hiliteColor</metadata>
+  <metadata key="focusColor.editor">com.livecode.pi.color</metadata>
+  <metadata key="focusColor.default"></metadata>
+  <metadata key="focusColor.section">Colors</metadata>
+  <metadata key="focusColor.label">focusColor</metadata>
+  <property name="labelTextColor" get="string" set="string"/>
+  <metadata key="labelTextColor.label">Text Color</metadata>
+  <metadata key="labelTextColor.section">Colors</metadata>
+  <metadata key="labelTextColor.editor">com.livecode.pi.color</metadata>
+  <metadata key="labelTextColor.default">127,0,255</metadata>
+  <metadata key="labelTextColor.user_visible">true</metadata>
+  <property name="outerBorderColor" get="string" set="string"/>
+  <metadata key="outerBorderColor.label">Outer Border Color</metadata>
+  <metadata key="outerBorderColor.section">Colors</metadata>
+  <metadata key="outerBorderColor.editor">com.livecode.pi.colorwithalpha</metadata>
+  <metadata key="labelTextColor.default">127,127,127,127</metadata>
+  <metadata key="outerBorderColor.user_visible">true</metadata>
+  <property name="paintStyle" get="string" set="string"/>
+  <metadata key="paintStyle.editor">com.livecode.pi.enum</metadata>
+  <metadata key="paintStyle.label">Paint Style</metadata>
+  <metadata key="paintStyle.default">solid color</metadata>
+  <metadata key="paintStyle.options">solid color,linear gradient</metadata>
+  <property name="cornerRadius" get="real" set="real"/>
+  <metadata key="cornerRadius">Corner Radius</metadata>
+  <metadata key="cornerRadius.section">Basic</metadata>
+  <metadata key="cornerRadius.editor">com.livecode.pi.number</metadata>
+  <metadata key="cornerRadius.user_visible">true</metadata>
+  <property name="borderWidth" get="real" set="real"/>
+  <metadata key="borderWidth">Border Width</metadata>
+  <metadata key="borderWidth.section">Basic</metadata>
+  <metadata key="borderWidth.editor">com.livecode.pi.integer</metadata>
+  <metadata key="borderWidth.user_visible">true</metadata>
+  <property name="label" get="optional string" set="string"/>
+  <property name="textFont" get="optional string" set="string"/>
+  <property name="textSize" get="optional integer" set="integer"/>
+  <property name="sliderBarColor" get="string" set="string"/>
+  <metadata key="sliderBarColor.label">sliderBarColor</metadata>
+  <metadata key="sliderBarColor.section">Colors</metadata>
+  <metadata key="sliderBarColor.editor">com.livecode.pi.colorwithalpha</metadata>
+  <metadata key="sliderBarColor.order">1</metadata>
+  <metadata key="sliderBarColor.default">127,127,127,127</metadata>
+  <metadata key="primaryColor.user_visible">true</metadata>
+  <property name="secondaryColor" get="string" set="string"/>
+  <metadata key="secondaryColor.label">Secondary Color</metadata>
+  <metadata key="secondaryColor.section">Colors</metadata>
+  <metadata key="secondaryColor.section">Gradient</metadata>
+  <metadata key="secondaryColor.editor">com.livecode.pi.colorwithalpha</metadata>
+  <metadata key="secondaryColor.subsection">A</metadata>
+  <metadata key="secondaryColor.order">2</metadata>
+  <metadata key="secondaryColor.default">127,255,255,255</metadata>
+  <metadata key="secondaryColor.user_visible">true</metadata>
   <handler name="OnPaint" parameters="" return="any"/>
   <handler name="OnMouseUp" parameters="" return="any"/>
   <handler name="OnMouseDown" parameters="" return="any"/>

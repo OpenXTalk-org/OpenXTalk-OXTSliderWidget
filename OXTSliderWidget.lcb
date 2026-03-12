@@ -55,6 +55,10 @@ use com.livecode.engine
 use com.livecode.library.widgetutils
 use com.livecode.math
 
+use com.livecode.foreign
+use com.livecode.mathfoundation
+use com.livecode.library.canvas
+
 -- adding metadata to ensure the extension displays correctly in livecode
 metadata title is "OXT Slider"
 metadata author is "Paul McClernan"
@@ -88,12 +92,158 @@ property horizontalOrentation	 get mHoriz	  set setHorizOrientation
 metadata horizontalOrentation.editor is "com.livecode.pi.boolean"
 -- metadata deadZoneSize.section is "Basic"
 metadata horizontalOrentation.label is "Horizontal orientation"
-metadata horizontalOrentation.default is "false"
+metadata horizontalOrentation.default is "true"
 metadata horizontalOrentation.section is "Basic"
 public handler setHorizOrientation(in pBoolean as Boolean)
 	put pBoolean into mHoriz
    OnGeometryChanged()
 	redraw all
+end handler
+
+metadata foregroundColor.editor is "com.livecode.pi.color"
+metadata foregroundColor.default is ""
+metadata foregroundColor.section is "Colors"
+metadata foregroundColor.label is "foregroundColor"
+
+metadata backgroundColor.editor is "com.livecode.pi.color"
+metadata backgroundColor.default is ""
+metadata backgroundColor.section is "Colors"
+metadata backgroundColor.label is "backgroundColor"
+
+metadata hiliteColor.editor is "com.livecode.pi.color"
+metadata hiliteColor.default is ""
+metadata hiliteColor.section is "Colors"
+metadata hiliteColor.label is "hiliteColor"
+
+metadata focusColor.editor is "com.livecode.pi.color"
+metadata focusColor.default is ""
+metadata focusColor.section is "Colors"
+metadata focusColor.label is "focusColor"
+
+
+private variable mLabelTextColor         as Color
+property labelTextColor          get getLabelTextColor        set setLabelTextColor
+metadata labelTextColor.label is "Text Color"
+metadata labelTextColor.section is "Colors"
+metadata labelTextColor.editor is "com.livecode.pi.color"
+metadata labelTextColor.default is "127,0,255"
+metadata labelTextColor.user_visible is "true"
+private handler getLabelTextColor() returns String
+	return colorToString(mLabelTextColor,false)
+end handler
+private handler setLabelTextColor(in pColor as String)
+	put stringToColor(pColor) into mLabelTextColor
+	-- updatePaint(mPaintStyle)
+	redraw all
+end handler
+
+private variable mOuterBorderColor       as Color
+property outerBorderColor          get getOuterBorderColor        set setOuterBorderColor
+metadata outerBorderColor.label is "Outer Border Color"
+metadata outerBorderColor.section is "Colors"
+metadata outerBorderColor.editor is "com.livecode.pi.colorwithalpha"
+metadata labelTextColor.default is "127,127,127,127"
+metadata outerBorderColor.user_visible is "true"
+private handler getOuterBorderColor() returns String
+	return colorToString( mOuterBorderColor, false)
+end handler
+private handler setOuterBorderColor(in pColor as String)
+	put stringToColor(pColor) into mOuterBorderColor
+	redraw all
+end handler
+
+
+private variable mPaintStyle        as String
+property paintStyle         get mPaintStyle         set setPaintStyle
+metadata paintStyle.editor is "com.livecode.pi.enum"
+metadata paintStyle.label   is "Paint Style"
+metadata paintStyle.default is "solid color"
+metadata paintStyle.options is "solid color,linear gradient"
+private handler setPaintStyle(in pStyle as String)
+	-- updatePaint(pStyle)
+		redraw all
+end handler
+
+private variable mCornerRadius      as Real
+property cornerRadius       get mCornerRadius       set setCornerRadius
+
+metadata cornerRadius is "Corner Radius"
+metadata cornerRadius.section is "Basic"
+metadata cornerRadius.editor is "com.livecode.pi.number"
+metadata cornerRadius.user_visible is "true"
+
+private handler setCornerRadius(in pRadius as Real)
+	put pRadius into mCornerRadius
+	redraw all
+end handler
+
+private variable mBorderWidth       as Real
+property borderWidth        get mBorderWidth        set setBorderWidth
+metadata borderWidth is "Border Width"
+metadata borderWidth.section is "Basic"
+metadata borderWidth.editor is "com.livecode.pi.integer"
+metadata borderWidth.user_visible is "true"
+private handler setBorderWidth(in pWidth as Real)
+	put pWidth into mBorderWidth
+	redraw all
+end handler
+
+private variable mLabel as optional String
+property label              get mLabel              set setLabel
+private handler setLabel(in pLabel as String)
+	put pLabel into mLabel
+	redraw all
+end handler
+
+private variable mTextFont          as optional String
+property textFont           get mTextFont           set setTextFont
+private handler setTextFont(in pTextFont as String)
+	put pTextFont into mTextFont
+	redraw all
+end handler
+
+private variable mTextSize          as optional Integer
+property textSize           get mTextSize           set setTextSize
+private handler setTextSize(in pTextSize as Integer)
+	put pTextSize into mTextSize
+	redraw all
+end handler
+
+
+private variable mSliderBarColor as Color
+property sliderBarColor       get getSliderBarColor     set setSliderBarColor
+metadata sliderBarColor.label is "sliderBarColor"
+metadata sliderBarColor.section is "Colors"
+metadata sliderBarColor.editor is "com.livecode.pi.colorwithalpha"
+metadata sliderBarColor.order is "1"
+metadata sliderBarColor.default is "127,127,127,127"
+metadata primaryColor.user_visible is "true"
+private handler getSliderBarColor() returns String
+	return colorToString(mSliderBarColor,true)
+end handler
+private handler setSliderBarColor(in pColor as String)
+	put stringToColor(pColor) into mSliderBarColor
+	-- updatePaint(mPaintStyle)
+	redraw all
+end handler
+
+private variable mSecondaryColor    as Color
+property secondaryColor	get getSecondaryColor	set setSecondaryColor
+metadata secondaryColor.label is "Secondary Color"
+metadata secondaryColor.section is "Colors"
+metadata secondaryColor.section is "Gradient"
+metadata secondaryColor.editor is "com.livecode.pi.colorwithalpha"
+metadata secondaryColor.subsection is "A"
+metadata secondaryColor.order is "2"
+metadata secondaryColor.default is "127,255,255,255"
+metadata secondaryColor.user_visible is "true"
+private handler getSecondaryColor() returns String
+	return colorToString(mSecondaryColor,true)
+end handler
+private handler setSecondaryColor(in pColor as String)
+	put stringToColor(pColor) into mSecondaryColor
+	-- updatePaint(mPaintStyle)
+   redraw all
 end handler
 
 ------------------------------ Main Rendering ------------------------------
@@ -107,7 +257,8 @@ public handler OnPaint()
    ------------------------------ Horizontal orientation ------------------------------
    if mHoriz then
       set the stroke width of this canvas to 10  -- (tW * 0.1)
-      set the paint of this canvas to solid paint with color [0,0,0,1]
+      -- set the paint of this canvas to solid paint with color [0.5,0.5,0.5,0.5]
+		set the paint of this canvas to solid paint with mSliderBarColor
       stroke line path from point [0, tH / 2 ] to point[ tW, tH / 2 ] on this canvas
       if mBarRect is not nothing then
          if mMouseDown then --- rendereed while dragging slider
@@ -118,31 +269,32 @@ public handler OnPaint()
          -- rectangle [ Left, Top, Right, Bottom]
          begin layer with outer shadow effect on this canvas
             set the paint of this canvas to solid paint with color [0,1,0,1]
-            set the stroke width of this canvas to 5 -- (tH * 0.05)
+            set the stroke width of this canvas to 1 -- (tH * 0.05)
             -- stroke line path from point [ mRight , 0  ] to point[ mRight, tH] on this canvas
             -- fill arc path centered at point [tW/2, mTop] with radius (0.33 * tW) on this canvas
-            fill circle path centered at point [mRight,tH/2] with radius (0.125 * tH) on this canvas
+            fill circle path centered at point [mRight,tH/2] with radius (0.49 * tH) on this canvas
 				-- fill rectangle path of rectangle [mRight-(tW * 0.05),0+(tH* 0.1),mRight+(tW * 0.05),tH - (tH * 0.1)] on this canvas
          end layer on this canvas
       end if
       ------------------------------ Vertical orientation ------------------------------
    else
       set the stroke width of this canvas to 10  -- (tW * 0.1)
-      set the paint of this canvas to solid paint with color [0,0,0,1]
+		-- set the paint of this canvas to solid paint with color [0.5,0.5,0.5,0.5]
+		set the paint of this canvas to solid paint with mSliderBarColor
       stroke line path from point [tW / 2, 0 ] to point[tW / 2,tH] on this canvas
       if mBarRect is not nothing then
          if mMouseDown then --- rendereed while dragging slider
-            set the paint of this canvas to solid paint with color [0,1,0,mPercentVal]
+            set the paint of this canvas to solid paint with color [ 0, 1, 0, mPercentVal ]
             -- set the paint of this canvas to solid paint with my foreground paint
             fill rounded rectangle path of mBarRect with radius 4 on this canvas
          end if
          -- rectangle [ Left, Top, Right, Bottom]
          begin layer with outer shadow effect on this canvas
             set the paint of this canvas to solid paint with color [0,1,0,1]
-            set the stroke width of this canvas to 5 -- (tH * 0.05)
+            set the stroke width of this canvas to 1 -- (tH * 0.05)
             -- stroke line path from point [0,mTop] to point[tW, mTop] on this canvas
             -- fill arc path centered at point [tW/2, mTop] with radius (0.33 * tW) on this canvas
-            fill circle path centered at point [tW/2, mTop] with radius (0.125 * tW) on this canvas
+            fill circle path centered at point [tW/2, mTop] with radius (0.49 * tW) on this canvas
          end layer on this canvas
       end if
    end if
@@ -260,8 +412,9 @@ end handler
 --- called when widget is created
 public handler OnCreate()
 	put false into mOnlyFillWhileMoving
-   put false into mHoriz
+   put true into mHoriz
    put false into mMouseDown
+	put color [ 0.5, 0.5, 0.5, 0.5 ] into mSliderBarColor
    put 0.5 into mPercentVal
    put (my height / 2) into mTop
    put (my width / 2) into mRight
