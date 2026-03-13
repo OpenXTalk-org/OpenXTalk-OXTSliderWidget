@@ -64,7 +64,7 @@ metadata title is "OXT Slider"
 metadata author is "Paul McClernan"
 metadata version is "0.1"
 metadata preferredSize is "64,256"
-metadata svgicon is "M28.057,3.454v2.284c0,.229-.172.413-.386.413h-11.867c-.556,1.32-1.789,2.245-3.226,2.245s-2.67-.925-3.226-2.245H1.599c-.213,0-.386-.185-.386-.413v-2.284c0-.229.172-.413.386-.413h7.754c.556-1.32,1.79-2.245,3.226-2.245s2.67.925,3.226,2.245h11.867c.213,0,.386.185.386.413ZM12.579,2.449c-1.104,0-2.002.963-2.002,2.146s.898,2.146,2.002,2.146,2.001-.963,2.001-2.146-.898-2.146-2.001-2.146Z"
+-- metadata svgicon is ""
 
 -------------------------------------------------------------------  Properties --------------------------------------------------------------------------------------
 
@@ -250,74 +250,64 @@ end handler
 public handler OnPaint()
    set the antialias of this canvas to true
 
-	variable tMargin as Number
-	put 10 into tMargin
-
-	variable tPath as Path
-	variable tH as Integer
-	variable tW as Integer
-	put my height into tH
+   variable tH as Integer
+   variable tW as Integer
+   put my height into tH
    put my width into tW
-
-	if mOnlyFillWhileMoving is false then --- rendereed while dragging slider
-		if mHoriz then
-			set the paint of this canvas to solid paint with color [0,1,0, 1.0 - mPercentVal]
-		else
-			set the paint of this canvas to solid paint with color [0,1,0, mPercentVal]
-		end if
-		set the paint of this canvas to my highlight paint
-		fill rounded rectangle path of mBarRect with radius 5 on this canvas
-	end if
-
    ------------------------------ Horizontal orientation ------------------------------
    if mHoriz then
-      set the stroke width of this canvas to (tH * 0.333)
+      set the stroke width of this canvas to 10  -- (tW * 0.1)
+      -- set the paint of this canvas to solid paint with color [0.5,0.5,0.5,0.5]
 		set the paint of this canvas to solid paint with mSliderBarColor
-      stroke line path from point [0 +(tMargin/2), tH/2] to point[ tW -(tMargin/2), tH/2 ] on this canvas
+      stroke line path from point [0, tH / 2 ] to point[ tW, tH / 2 ] on this canvas
       if mBarRect is not nothing then
          if mMouseDown then --- rendereed while dragging slider
             set the paint of this canvas to solid paint with color [0,1,0, 1.0 - mPercentVal]
             -- set the paint of this canvas to solid paint with my foreground paint
-            fill rounded rectangle path of mBarRect with radius 5 on this canvas
+            fill rounded rectangle path of mBarRect with radius 4 on this canvas
 			end if
          -- rectangle [ Left, Top, Right, Bottom]
          begin layer with outer shadow effect on this canvas
             set the paint of this canvas to solid paint with color [0,1,0,1]
             set the stroke width of this canvas to 1 -- (tH * 0.05)
             -- stroke line path from point [ mRight , 0  ] to point[ mRight, tH] on this canvas
-			-- fill arc path centered at point [tW/2, mTop] with radius (0.33 * tW) on this canvas
-			put mThumbVector into tPath
-			translate tPath by [ mRight - (mThumbWidth/2) +(tMargin/2) , tH/2 - (mThumbHeight/2) ]
-			fill tPath on this canvas
-           ---  fill circle path centered at point [mRight,tH/2] with radius (0.49 * tH) on this canvas
-		   -- fill rectangle path of rectangle [mRight-(tW * 0.05),0+(tH* 0.1),mRight+(tW * 0.05),tH - (tH * 0.1)] on this canvas
+            -- fill arc path centered at point [tW/2, mTop] with radius (0.33 * tW) on this canvas
+            fill circle path centered at point [mRight,tH/2] with radius (0.49 * tH) on this canvas
+				-- fill rectangle path of rectangle [mRight-(tW * 0.05),0+(tH* 0.1),mRight+(tW * 0.05),tH - (tH * 0.1)] on this canvas
          end layer on this canvas
       end if
       ------------------------------ Vertical orientation ------------------------------
    else
-      set the stroke width of this canvas to (tW * 0.333)
+      set the stroke width of this canvas to 10  -- (tW * 0.1)
+		-- set the paint of this canvas to solid paint with color [0.5,0.5,0.5,0.5]
 		set the paint of this canvas to solid paint with mSliderBarColor
-      stroke line path from point [tW/2, 0 +(tMargin/2) ] to point [tW/2, tH -(tMargin/2)] on this canvas
+      stroke line path from point [tW / 2, 0 ] to point[tW / 2,tH] on this canvas
       if mBarRect is not nothing then
          if mMouseDown then --- rendereed while dragging slider
             set the paint of this canvas to solid paint with color [ 0, 1, 0, mPercentVal ]
             -- set the paint of this canvas to solid paint with my foreground paint
-            fill rounded rectangle path of mBarRect with radius 5 on this canvas
+            fill rounded rectangle path of mBarRect with radius 4 on this canvas
          end if
          -- rectangle [ Left, Top, Right, Bottom]
          begin layer with outer shadow effect on this canvas
             set the paint of this canvas to solid paint with color [0,1,0,1]
-				-- set the stroke width of this canvas to 1 -- (tH * 0.05)
-				put mThumbVector into tPath
-				rotate tPath by -90
-				translate tPath by [tW/2 - (mThumbHeight/2), mTop + (mThumbWidth/2)+7]
-            fill tPath on this canvas
-           --  fill circle path at point [tW/2, mTop] with radius (0.49 * tW) on this canvas
+            set the stroke width of this canvas to 1 -- (tH * 0.05)
+            -- stroke line path from point [0,mTop] to point[tW, mTop] on this canvas
+            -- fill arc path centered at point [tW/2, mTop] with radius (0.33 * tW) on this canvas
+            fill circle path centered at point [tW/2, mTop] with radius (0.49 * tW) on this canvas
          end layer on this canvas
       end if
    end if
-      --------- Outline the Widget's rect --------
-    	-- set the stroke width of this canvas to (tW * 0.02)
+
+	if mOnlyFillWhileMoving is false then --- rendereed while dragging slider
+		if mHoriz then
+			set the paint of this canvas to solid paint with color [0,1,0, 1.0 - mPercentVal]
+		else
+			set the paint of this canvas to solid paint with color [0,1,0,mPercentVal]
+		end if
+		-- set the paint of this canvas to solid paint with my foreground paint
+		fill rounded rectangle path of mBarRect with radius 4 on this canvas
+	end if
       -- set the paint of this canvas to solid paint with color [0,0,0,1]
       -- stroke rectangle path of rectangle[0,0, tW, tH] on this canvas
  end handler
@@ -327,8 +317,8 @@ public handler OnPaint()
  -- * scrollbarEnd pEnd
  -- * scrollbarDrag pNewPosition
  -- Not used, may be more useful for a 'stepper' control
- -- scrollbarLineInc pNewPosition
  -- scrollbarLineDec pNewPosition
+ -- scrollbarLineInc pNewPosition
  -- scrollbarPageInc pNewPosition
  -- scrollbarPageDec pNewPosition
 
@@ -351,35 +341,33 @@ public handler OnPaint()
    end handler
 
    public handler OnMouseMove()
-		variable tMargin as Number
-		put 10 into tMargin
       if mMouseDown is not nothing and mMouseDown is true then
          variable tPosition as Point
          put the mouse position into tPosition
          post "mouseMove" with [the x of tPosition, the y of tPosition]
          ------------------------------ Horizontal orientation
          if mHoriz then
-            put (my width - (tMargin *2) -  the x of tPosition) into mPercentVal
-            put (my width - (tMargin *2) - mPercentVal) into mRight
+            put (my width -  the x of tPosition) into mPercentVal
+            put my width - mPercentVal into mRight
             put mPercentVal / my width into mPercentVal
-            if mPercentVal >= 1.0 then
+            if mPercentVal > 1.0 then
                put 1.0 into mPercentVal
-               put my width + (mThumbWidth/2) into mRight
+               put my width into mRight
             end if
             if mPercentVal <= 0 then
                put 0 into mPercentVal
                put rectangle [0,0,0,0] into mBarRect
-               put 0 +(mThumbWidth/2) into mRight
+               put 0 into mRight
             else
-               put rectangle [0 +tMargin +(mThumbWidth/2), 0+tMargin, mRight +tMargin, my height -tMargin] into mBarRect
+               put rectangle [0,0, mRight, my height] into mBarRect
             end if
             -- log [mPercentVal, tTop]
          ------------------------------ Vertical orientation
          else
-            put (my height -(tMargin *2) -  the y of tPosition) into mPercentVal
-            put my height -(tMargin *2) - mPercentVal into mTop
+            put (my height -  the y of tPosition) into mPercentVal
+            put my height - mPercentVal into mTop
             put mPercentVal / my height into mPercentVal
-            if mPercentVal >= 1.0 then
+            if mPercentVal > 1.0 then
                put 1.0 into mPercentVal
                put 0 into mTop
             end if
@@ -388,7 +376,7 @@ public handler OnPaint()
                put my height into mTop
                put rectangle [0,0,0,0] into mBarRect
             else
-               put rectangle [0+(tMargin), mTop +(tMargin), my width -(tMargin), my height +(mThumbWidth/2) +tMargin ] into mBarRect
+               put rectangle [0, mTop, my width, my height] into mBarRect
             end if
             -- log [mPercentVal, tTop]
          end if
@@ -398,43 +386,31 @@ public handler OnPaint()
 end handler
 
 public handler OnMouseCancel()
-   -- put false into mMouseButtonDown
+   -- put false into mPianoMouseButtonDown
    OnMouseUp()
 end handler
-
 --public handler OnMouseCancelHover()
---   put false into mMouseButtonDown
+--   put false into mPianoMouseButtonDown
 --   OnMouseUp()
 --end handler
 
 --public handler OnMouseEnter()
    --variable tMouseButtonState as String
+   --execute script "global gPianoMouseButtonDown ; return gPianoMouseButtonDown"
    --execute script "return mouse()"
    -- log the result
    --if the result is "up" then
-      --put false into mMouseButtonDown
+      --put false into mPianoMouseButtonDown
        -- OnMouseUp()
    --else
-       --put true into mMouseButtonDown
+       --put true into mPianoMouseButtonDown
        -- OnMouseDown()
    --end if
 --end handler
 
 --------------------------------------------------------------------------  Creating & Redrawing --------------------------------------------------------------------------------------
-private variable mThumbVector as optional Path
-private variable mThumbHeight as optional Real
-private variable mThumbWidth as optional Real
-
 --- called when widget is created
 public handler OnCreate()
-	variable tThumbBounds as optional Rectangle
-	variable tMargin as Number
-	put 10 into tMargin
-	put path "M6.936,39.115c2.082,0,3.921-10.771,4.403-14.278s.734-11.26.734-13.175v-3.241c0-.025,0-3.392,0-3.392,0-1.915-.328-3.467-.734-3.467,0,0-2.354-.711-4.403-.687s-4.379.687-4.379.687c-.405,0-.734,1.552-.734,3.467v6.633c0,1.915.184,9.725.734,13.175s1.945,14.278,4.379,14.278Z" into mThumbVector
-   put the bounding box of mThumbVector into tThumbBounds
-	put the height of tThumbBounds into mThumbHeight
-	put the width of tThumbBounds into mThumbWidth
-   -- log [mThumbHeight,mThumbWidth]
 	put false into mOnlyFillWhileMoving
    put true into mHoriz
    put false into mMouseDown
@@ -443,28 +419,24 @@ public handler OnCreate()
    put (my height / 2) into mTop
    put (my width / 2) into mRight
    if mHoriz then
-		put rectangle [0 + (tMargin/2), 0 + (tMargin/2), mRight + (mThumbWidth/2) , my height -(tMargin/2)] into mBarRect
-      -- put rectangle [0 + tMargin, 0 + tMargin, mRight - tMargin, my height - tMargin ] into mBarRect
+      put rectangle [0, 0, mRight, my height ] into mBarRect
    else
-		-- put rectangle [0 , mTop, my width - (tMargin/2), my height -tMargin ] into mBarRect
-		put rectangle [0 + (tMargin/2), mTop + (tMargin/2), my width + (tMargin/2), my height +(tMargin/2) ] into mBarRect
+      put rectangle [0, mTop, my width, my height ] into mBarRect
    end if
    redraw all
 end handler
 
 -- called when the widget is resizedd
 public handler OnGeometryChanged()
-	variable tMargin as Number
-	put 10 into tMargin
-   if mHoriz then
-      put my width - (my width *  mPercentVal) +(tMargin/2) into mRight
+ if mHoriz then
+      put my width - (my width *  mPercentVal) into mRight
       -- put rectangle [0, my height/2 - tSliderHeight/2, my width, my height/2 + tSliderHeight/2] into mSliderBounds
-      put rectangle [0 + (tMargin/2), 0 + (tMargin/2), mRight + (mThumbWidth/2) , my height -(tMargin/2)] into mBarRect
+      put rectangle [0, 0, mRight, my height] into mBarRect
       -- log [mPercentVal, tTop]
    else
-      put my height - (my height *  mPercentVal) +(tMargin/2) into mTop
+      put my height - (my height *  mPercentVal) into mTop
       -- put rectangle [0, my height/2 - tSliderHeight/2, my width, my height/2 + tSliderHeight/2] into mSliderBounds
-      put rectangle [0 + (tMargin/2), mTop, my width - (tMargin/2), my height -tMargin ] into mBarRect
+      put rectangle [0, mTop, my width, my height] into mBarRect
       -- log [mPercentVal, tTop]
    end if
    redraw all
