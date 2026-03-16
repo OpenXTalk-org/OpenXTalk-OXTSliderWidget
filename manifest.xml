@@ -2,21 +2,21 @@
   <name>org.openxtalk.widget.oxtslider</name>
   <title>OXT Slider</title>
   <author>Paul McClernan</author>
-  <version>0.1</version>
+  <version>0.2</version>
   <license>community</license>
   <type>widget</type>
   <requires name="com.livecode.canvas"/>
   <requires name="com.livecode.library.widgetutils"/>
   <requires name="com.livecode.widget"/>
+  <requires name="com.livecode.engine"/>
   <requires name="com.livecode.arithmetic"/>
   <requires name="com.livecode.binary"/>
   <requires name="com.livecode.list"/>
   <requires name="com.livecode.logic"/>
   <requires name="com.livecode.string"/>
   <requires name="com.livecode.type"/>
-  <requires name="com.livecode.engine"/>
   <requires name="com.livecode.byte"/>
-  <metadata key="preferredSize">64,256</metadata>
+  <metadata key="preferredSize">32,512</metadata>
   <metadata key="svgicon">M28.057,3.454v2.284c0,.229-.172.413-.386.413h-11.867c-.556,1.32-1.789,2.245-3.226,2.245s-2.67-.925-3.226-2.245H1.599c-.213,0-.386-.185-.386-.413v-2.284c0-.229.172-.413.386-.413h7.754c.556-1.32,1.79-2.245,3.226-2.245s2.67.925,3.226,2.245h11.867c.213,0,.386.185.386.413ZM12.579,2.449c-1.104,0-2.002.963-2.002,2.146s.898,2.146,2.002,2.146,2.001-.963,2.001-2.146-.898-2.146-2.001-2.146Z</metadata>
   <property name="onlyFillWhileMoving" get="boolean" set="boolean"/>
   <metadata key="onlyFillWhileMoving.editor">com.livecode.pi.boolean</metadata>
@@ -46,23 +46,12 @@
   <metadata key="focusColor.default"></metadata>
   <metadata key="focusColor.section">Colors</metadata>
   <metadata key="focusColor.label">focusColor</metadata>
-  <property name="labelTextColor" get="string" set="string"/>
-  <metadata key="labelTextColor.label">Text Color</metadata>
-  <metadata key="labelTextColor.section">Colors</metadata>
-  <metadata key="labelTextColor.editor">com.livecode.pi.color</metadata>
-  <metadata key="labelTextColor.default">127,0,255</metadata>
-  <metadata key="labelTextColor.user_visible">true</metadata>
   <property name="outerBorderColor" get="string" set="string"/>
   <metadata key="outerBorderColor.label">Outer Border Color</metadata>
   <metadata key="outerBorderColor.section">Colors</metadata>
   <metadata key="outerBorderColor.editor">com.livecode.pi.colorwithalpha</metadata>
   <metadata key="labelTextColor.default">127,127,127,127</metadata>
   <metadata key="outerBorderColor.user_visible">true</metadata>
-  <property name="paintStyle" get="string" set="string"/>
-  <metadata key="paintStyle.editor">com.livecode.pi.enum</metadata>
-  <metadata key="paintStyle.label">Paint Style</metadata>
-  <metadata key="paintStyle.default">solid color</metadata>
-  <metadata key="paintStyle.options">solid color,linear gradient</metadata>
   <property name="cornerRadius" get="real" set="real"/>
   <metadata key="cornerRadius">Corner Radius</metadata>
   <metadata key="cornerRadius.section">Basic</metadata>
@@ -76,29 +65,28 @@
   <property name="label" get="optional string" set="string"/>
   <property name="textFont" get="optional string" set="string"/>
   <property name="textSize" get="optional integer" set="integer"/>
-  <property name="sliderBarColor" get="string" set="string"/>
-  <metadata key="sliderBarColor.label">sliderBarColor</metadata>
-  <metadata key="sliderBarColor.section">Colors</metadata>
-  <metadata key="sliderBarColor.editor">com.livecode.pi.colorwithalpha</metadata>
-  <metadata key="sliderBarColor.order">1</metadata>
-  <metadata key="sliderBarColor.default">127,127,127,127</metadata>
+  <property name="railBarColor" get="string" set="string"/>
+  <metadata key="railBarColor.label">Rail Bar Color</metadata>
+  <metadata key="railBarColor.section">Colors</metadata>
+  <metadata key="railBarColor.editor">com.livecode.pi.colorwithalpha</metadata>
+  <metadata key="railBarColor.order">1</metadata>
+  <metadata key="railBarColor.default">127,127,127,127</metadata>
   <metadata key="primaryColor.user_visible">true</metadata>
-  <property name="secondaryColor" get="string" set="string"/>
-  <metadata key="secondaryColor.label">Secondary Color</metadata>
-  <metadata key="secondaryColor.section">Colors</metadata>
-  <metadata key="secondaryColor.section">Gradient</metadata>
-  <metadata key="secondaryColor.editor">com.livecode.pi.colorwithalpha</metadata>
-  <metadata key="secondaryColor.subsection">A</metadata>
-  <metadata key="secondaryColor.order">2</metadata>
-  <metadata key="secondaryColor.default">127,255,255,255</metadata>
-  <metadata key="secondaryColor.user_visible">true</metadata>
+  <property name="ThumbFillColor" get="string" set="string"/>
+  <metadata key="ThumbFillColor.label">Thumb Fill Color</metadata>
+  <metadata key="ThumbFillColor.section">Colors</metadata>
+  <metadata key="ThumbFillColor.editor">com.livecode.pi.colorwithalpha</metadata>
+  <metadata key="ThumbFillColor.subsection">A</metadata>
+  <metadata key="ThumbFillColor.order">2</metadata>
+  <metadata key="ThumbFillColor.default">240,240,240,255</metadata>
+  <metadata key="ThumbFillColor.user_visible">true</metadata>
+  <handler name="OnCreate" parameters="" return="any"/>
+  <handler name="OnOpen" parameters="" return="any"/>
   <handler name="OnPaint" parameters="" return="any"/>
+  <handler name="OnGeometryChanged" parameters="" return="any"/>
   <handler name="OnMouseUp" parameters="" return="any"/>
   <handler name="OnMouseDown" parameters="" return="any"/>
   <handler name="OnMouseMove" parameters="" return="any"/>
   <handler name="OnMouseCancel" parameters="" return="any"/>
-  <handler name="OnCreate" parameters="" return="any"/>
-  <handler name="OnGeometryChanged" parameters="" return="any"/>
-  <handler name="OnOpen" parameters="" return="any"/>
   <handler name="hitTestPath" parameters="in Point,in Path,in number,in boolean" return="boolean"/>
 </package>
