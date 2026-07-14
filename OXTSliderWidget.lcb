@@ -119,6 +119,18 @@ metadata horizontalOrentation.default is "false"
 metadata horizontalOrentation.section is "Basic"
 public handler setHorizOrientation(in pBoolean as Boolean)
 	put pBoolean into mHoriz
+
+	--- swap the height and width
+	variable tW as Number
+	variable tH as Number
+	put my width into tW
+	put my height into tH
+	put property "width" of mE into tH
+	put property "height" of mE into tW
+	set property "width" of mE to tW
+	set property "height" of mE to tH
+	log [tH,tW]
+
    setPercentVal(mPercent)
    OnGeometryChanged()
 	redraw all
@@ -356,7 +368,9 @@ public handler setMargin(in pMargin as Number)
 	redraw all
 end handler
 
+private variable mE as ScriptObject
 public handler OnCreate()
+	put my script object into mE
 	variable tThumbBounds as optional Rectangle
 	put "thumb" into mThumbShape
     put path "M19.957,39.487c7.348,0,13.839-10.771,15.539-14.278s2.589-11.26,2.589-13.175v-3.241c0-.025,0-3.392,0-3.392,0-1.915-1.159-3.467-2.589-3.467,0,0-8.308-.711-15.539-.687-7.231.024-15.453.687-15.453.687-1.43,0-2.589,1.552-2.589,3.467v6.633c0,1.915.648,9.725,2.589,13.175s6.865,14.278,15.453,14.278Z" into mThumbVector
@@ -368,7 +382,7 @@ public handler OnCreate()
 	put the color of my focus paint into mHiliteColor -- on macOS focus color is what we want not 'the highlight paint'
 	-- set the alpha of mHiliteColor to 1.0
 	-- log [the alpha of mHiliteColor]
-	
+
 	put mThumbWidth into mMargin
    --  log mMargin
    -- log [mThumbHeight,mThumbWidth]
@@ -429,11 +443,20 @@ public handler OnPaint()
 									  [0+mMargin, 0+mMargin, my width - mMargin , my height -mMargin ] \
 											with radius mCornerRadius on this canvas
 
+    if mBorderWidth > 0 then
+		set the paint of this canvas to my foreground paint
+		set the stroke width of this canvas to mBorderWidth
+		stroke rounded rectangle path of rectangle \
+										[0+mMargin, 0+mMargin, my width - mMargin , my height -mMargin ] \
+											with radius mCornerRadius on this canvas
+     end if
+
 		--------------------- paint fill bar --------------------------
       if mFillBarRect is not nothing then
          if mMouseDown then --- rendereed while dragging slider
 				set the paint of this canvas to solid paint with color [the red of mHiliteColor,the green of mHiliteColor,the blue of mHiliteColor, 1.0 * mPercentVal  ]
             fill rounded rectangle path of mFillBarRect with radius mCornerRadius on this canvas
+
 			end if
 			-------------------- PAINT THE THUMNB SVG PATH --------------------
 	      begin layer with outer shadow effect on this canvas
@@ -447,7 +470,6 @@ public handler OnPaint()
       ------------------------------ Vertical orientation ------------------------------
    else
 		put tW * 0.5 into tRailThinkness
-		-- set the stroke width of this canvas to tRailThinkness
 		set the paint of this canvas to solid paint with mRailBarColor
 		-- set the paint of this canvas to my background paint -- mRailBarColor
 
@@ -460,6 +482,14 @@ public handler OnPaint()
 		fill rounded rectangle path of rectangle \
 					     [0+mMargin, 0+mMargin, my width - mMargin , my height -mMargin ] \
 						      with radius mCornerRadius on this canvas
+
+		if mBorderWidth > 0 then
+			set the stroke width of this canvas to mBorderWidth
+			set the paint of this canvas to my foreground paint
+			stroke rounded rectangle path of rectangle \
+					  [0+mMargin, 0+mMargin, my width - mMargin , my height -mMargin ] \
+							with radius mCornerRadius on this canvas
+		end if
 
       if mFillBarRect is not nothing then
          if mMouseDown then --- rendereed while dragging slider
@@ -493,7 +523,7 @@ public handler OnPaint()
        put rectangle [0 + mMargin, mTop, my width -mMargin, my height -mMargin ] into mFillBarRect
        --  log [mPercentVal, mTop]
     end if
-    redraw all
+    -- redraw all
  end handler
  --------------------------------------------------------  Mouse Handlers ------------------------------------------------------------
  -- * scrollbarBeginning pStart
