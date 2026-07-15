@@ -3,6 +3,10 @@
 Description:
 Widget
 
+Name: label
+
+Type: property
+
 Name: mouseMove
 
 Type: message
@@ -68,6 +72,16 @@ metadata svgicon is "M28.057,3.454v2.284c0,.229-.172.413-.386.413h-11.867c-.556,
 
 -------------------------------------------------------------------  Properties --------------------------------------------------------------------------------------
 
+private variable mLabel as optional String
+property label              get mLabel              set setLabel
+metadata label.default is ""
+metadata label.section is "Basic"
+metadata label.order is "3"
+private handler setLabel(in pLabel as String)
+	put pLabel into mLabel
+	redraw all
+end handler
+
 private variable mFillBarRect as Rectangle
 private variable mTop as Number
 private variable mFillBarRight as Number
@@ -77,23 +91,40 @@ private variable mPercentVal as Real
 property percentageValue	 get getPercentVal	  set setPercentVal
 metadata percentageValue.editor is "com.livecode.pi.real"
 public handler setPercentVal(in pPercent as Real)
+	/*
+	if pPercent = mPercent then
+		return
+	end if
+   */
 	put pPercent into mPercent
 	if mPercent >= 1.0 then
 		put 1.0 into mPercent
-	else if mPercentVal <= 0.001 then
+	else if mPercent <= 0.001 then
 		put 0 into mPercent
 	end if
    if mHoriz then
 	  put mPercent into mPercentVal
 	else
-		put 1 - mPercent into mPercentVal
+		put 1- mPercent into mPercentVal
+		put mPercent into mPercent
 	end if
-	OnMouseMove()
    OnGeometryChanged()
 	redraw all
 end handler
 private handler getPercentVal() returns Real
 		return mPercent
+end handler
+
+private variable mShowPercentageValue as Boolean
+property showPercentageValue	 get mShowPercentageValue	  set setShowPercentageValue
+metadata showPercentageValue.editor is "com.livecode.pi.boolean"
+metadata showPercentageValue.label is "Show Percentage Value"
+metadata showPercentageValue.default is "false"
+metadata showPercentageValue.section is "Basic"
+public handler setShowPercentageValue(in pBoolean as Boolean)
+	put pBoolean into mShowPercentageValue
+   OnGeometryChanged()
+	redraw all
 end handler
 
 private variable mMouseDown as optional Boolean
@@ -113,13 +144,11 @@ end handler
 private variable mHoriz as Boolean
 property horizontalOrentation	 get mHoriz	  set setHorizOrientation
 metadata horizontalOrentation.editor is "com.livecode.pi.boolean"
--- metadata deadZoneSize.section is "Basic"
 metadata horizontalOrentation.label is "Horizontal orientation"
 metadata horizontalOrentation.default is "false"
 metadata horizontalOrentation.section is "Basic"
 public handler setHorizOrientation(in pBoolean as Boolean)
 	put pBoolean into mHoriz
-
 	--- swap the height and width
 	variable tW as Number
 	variable tH as Number
@@ -129,10 +158,19 @@ public handler setHorizOrientation(in pBoolean as Boolean)
 	put property "height" of mE into tW
 	set property "width" of mE to tW
 	set property "height" of mE to tH
-	log [tH,tW]
-
-   setPercentVal(mPercent)
+	-- log [tH,tW]
+	-- /*
+   if mHoriz then
+   	-- put mPercentVal into mPercent
+	else
+		-- put mPercentVal into mPercent
+		put 1 - mPercentVal into mPercentVal
+	end if
+	-- */
+	setPercentVal( mPercent )
+	-- OnMouseMove()
    OnGeometryChanged()
+	-- setPercentVal( mPercent )
 	redraw all
 end handler
 
@@ -208,7 +246,6 @@ metadata cornerRadius is "Corner Radius"
 metadata cornerRadius.section is "Basic"
 metadata cornerRadius.editor is "com.livecode.pi.number"
 metadata cornerRadius.user_visible is "true"
-
 private handler setCornerRadius(in pRadius as Real)
 	put pRadius into mCornerRadius
 	redraw all
@@ -222,13 +259,6 @@ metadata borderWidth.editor is "com.livecode.pi.integer"
 metadata borderWidth.user_visible is "true"
 private handler setBorderWidth(in pWidth as Real)
 	put pWidth into mBorderWidth
-	redraw all
-end handler
-
-private variable mLabel as optional String
-property label              get mLabel              set setLabel
-private handler setLabel(in pLabel as String)
-	put pLabel into mLabel
 	redraw all
 end handler
 
@@ -264,14 +294,14 @@ private handler setrailBarColor(in pColor as String)
 end handler
 
 private variable mThumbFillColor as Color
-property ThumbFillColor       get getThumbFillColor	set setThumbFillColor
-metadata ThumbFillColor.label is "Thumb Fill Color"
-metadata ThumbFillColor.section is "Colors"
-metadata ThumbFillColor.editor is "com.livecode.pi.colorwithalpha"
-metadata ThumbFillColor.subsection is "A"
-metadata ThumbFillColor.order is "2"
-metadata ThumbFillColor.default is "240,240,240,255"
-metadata ThumbFillColor.user_visible is "true"
+property thumbFillColor       get getThumbFillColor	set setThumbFillColor
+metadata thumbFillColor.label is "Thumb Fill Color"
+metadata thumbFillColor.section is "Colors"
+metadata thumbFillColor.editor is "com.livecode.pi.colorwithalpha"
+metadata thumbFillColor.subsection is "A"
+metadata thumbFillColor.order is "2"
+metadata thumbFillColor.default is "240,240,240,255"
+metadata thumbFillColor.user_visible is "true"
 private handler getThumbFillColor() returns String
 	return colorToString(mThumbFillColor,true)
 end handler
@@ -290,22 +320,24 @@ metadata thumbSVGPath.default is "M 16 0 A 16 16 0 1 0 16 32 A 16 16 0 1 0 16 0"
 
 private handler setThumbSVGPath(in pSVGPath as String)
     if char 1 of pSVGPath is "M" or char 1 of pSVGPath is "m" then
-		 if char 1 of pSVGPath is "M" or char 1 of pSVGPath is "m" then
+		 if char -1 of pSVGPath is "Z" or char -1 of pSVGPath is "z" then
 			 variable tThumbBounds as optional Rectangle
 			 -- put "custom" into mThumbShape
 			 setThumbShape("custom")
 			 put pSVGPath into mThumbSVGPath
 			 put path pSVGPath into mThumbVector
+
+          constrainPathToRect( rectangle [0,0,40,40], mThumbVector ) --- constrainPathToRect is in  com.livecode.library.widgetutils
+
 			 put the bounding box of mThumbVector into tThumbBounds
 			 put the height of tThumbBounds into mThumbHeight
 			 put the width of tThumbBounds into mThumbWidth
 		 else
-			 throw "Thumb SVG path strings must be closed paths ending with char 'Z' or 'z'"
+			 throw "Thumb SVG path strings should be closed paths ending with char 'Z' or 'z'"
        end if
 	 else
 		 throw "Thumb SVG path strings must begin a move instruction beginning with char 'M' or 'm'"
 	 end if
-	 --  scale tPath  by [0,0]
 
 	 OnGeometryChanged()
 	 redraw all
@@ -316,7 +348,7 @@ property thumbShape          get mThumbShape           set setThumbShape
 metadata thumbShape.editor is "com.livecode.pi.enum"
 metadata thumbShape.label   is "Thumb Style"
 metadata thumbShape.default is "thumb"
-metadata thumbShape.options is "none,pin,thumb,circle,custom"
+metadata thumbShape.options is "none,pin,thumb,rectangular,notch,rectangle,circle,custom"
 
 private handler setThumbShape(in pStyle as String)
 	variable tThumbBounds as optional Rectangle
@@ -327,6 +359,12 @@ private handler setThumbShape(in pStyle as String)
     else if pStyle is "thumb" then
         put path "M19.957,39.487c7.348,0,13.839-10.771,15.539-14.278s2.589-11.26,2.589-13.175v-3.241c0-.025,0-3.392,0-3.392,0-1.915-1.159-3.467-2.589-3.467,0,0-8.308-.711-15.539-.687-7.231.024-15.453.687-15.453.687-1.43,0-2.589,1.552-2.589,3.467v6.633c0,1.915.648,9.725,2.589,13.175s6.865,14.278,15.453,14.278Z" into mThumbVector
 		  put "M19.957,39.487c7.348,0,13.839-10.771,15.539-14.278s2.589-11.26,2.589-13.175v-3.241c0-.025,0-3.392,0-3.392,0-1.915-1.159-3.467-2.589-3.467,0,0-8.308-.711-15.539-.687-7.231.024-15.453.687-15.453.687-1.43,0-2.589,1.552-2.589,3.467v6.633c0,1.915.648,9.725,2.589,13.175s6.865,14.278,15.453,14.278Z" into mThumbSVGPath
+    else if pStyle is "rectangular" then
+		put path "M12.37,17.51c.17-7.09-1.3-15.01-1.3-15.01C11.08,1.12,9.96,0,8.58,0h-2.34S3.8,0,3.8,0C2.41,0,1.3,1.12,1.3,2.5,1.3,2.5-.02,10.52,0,17.51s1.3,14.92,1.3,14.92c0,1.38,1.12,2.5,2.5,2.5h4.78c1.38,0,2.5-1.12,2.5-2.5,0,0,1.13-7.83,1.3-14.92Z" into mThumbVector
+		put "M12.37,17.51c.17-7.09-1.3-15.01-1.3-15.01C11.08,1.12,9.96,0,8.58,0h-2.34S3.8,0,3.8,0C2.41,0,1.3,1.12,1.3,2.5,1.3,2.5-.02,10.52,0,17.51s1.3,14.92,1.3,14.92c0,1.38,1.12,2.5,2.5,2.5h4.78c1.38,0,2.5-1.12,2.5-2.5,0,0,1.13-7.83,1.3-14.92Z" into mThumbSVGPath
+	else if pStyle is "rectangle" then
+		put path "M19.5,35.94H0V0h19.49v35.93h0Z" into mThumbVector
+		put "M19.5,35.94H0V0h19.49v35.93h0Z" into mThumbSVGPath
 	 else if pStyle is "pin" then
       	put path "M6.936,39.115c2.082,0,3.921-10.771,4.403-14.278s.734-11.26.734-13.175v-3.241c0-.025,0-3.392,0-3.392,0-1.915-.328-3.467-.734-3.467,0,0-2.354-.711-4.403-.687s-4.379.687-4.379.687c-.405,0-.734,1.552-.734,3.467v6.633c0,1.915.184,9.725.734,13.175s1.945,14.278,4.379,14.278Z" into mThumbVector
 			put "M6.936,39.115c2.082,0,3.921-10.771,4.403-14.278s.734-11.26.734-13.175v-3.241c0-.025,0-3.392,0-3.392,0-1.915-.328-3.467-.734-3.467,0,0-2.354-.711-4.403-.687s-4.379.687-4.379.687c-.405,0-.734,1.552-.734,3.467v6.633c0,1.915.184,9.725.734,13.175s1.945,14.278,4.379,14.278Z" into mThumbSVGPath
@@ -334,11 +372,12 @@ private handler setThumbShape(in pStyle as String)
 		 -- put circle path centered at point [16,16] with radius 16 into mThumbVector
 		put path "M 16 0 A 16 16 0 1 0 16 32 A 16 16 0 1 0 16 0" into mThumbVector
 		put "M 16 0 A 16 16 0 1 0 16 32 A 16 16 0 1 0 16 0" into mThumbSVGPath
+	else if pStyle is "notch" then
+		 -- put circle path centered at point [16,16] with radius 16 into mThumbVector
+		put path "M19.11,32.43c0,1.38-1.93,2.5-4.31,2.5H6.55c-2.38,0-4.31-1.12-4.31-2.5C2.24,32.43.03,24.49,0,17.51S2.24,2.5,2.24,2.5C2.24,1.12,4.17,0,6.55,0,6.55,0,10.74,0,10.77,0h4.03C17.18,0,19.11,1.12,19.11,2.5c0,0,2.53,7.91,2.23,15.01s-2.23,14.92-2.23,14.92ZM14.51,17.49c.1-4.91-.8-10.38-.8-10.38,0-.96-.69-1.73-1.55-1.73h-1.45s-1.51,0-1.51,0c-.85,0-1.55.77-1.55,1.73,0,0-.81,5.55-.8,10.38s.8,10.32.8,10.32c0,.96.69,1.73,1.55,1.73h2.96c.85,0,1.55-.77,1.55-1.73,0,0,.7-5.42.8-10.32Z" into mThumbVector
+		put "M19.11,32.43c0,1.38-1.93,2.5-4.31,2.5H6.55c-2.38,0-4.31-1.12-4.31-2.5C2.24,32.43.03,24.49,0,17.51S2.24,2.5,2.24,2.5C2.24,1.12,4.17,0,6.55,0,6.55,0,10.74,0,10.77,0h4.03C17.18,0,19.11,1.12,19.11,2.5c0,0,2.53,7.91,2.23,15.01s-2.23,14.92-2.23,14.92ZM14.51,17.49c.1-4.91-.8-10.38-.8-10.38,0-.96-.69-1.73-1.55-1.73h-1.45s-1.51,0-1.51,0c-.85,0-1.55.77-1.55,1.73,0,0-.81,5.55-.8,10.38s.8,10.32.8,10.32c0,.96.69,1.73,1.55,1.73h2.96c.85,0,1.55-.77,1.55-1.73,0,0,.7-5.42.8-10.32Z" into mThumbSVGPath
 	else if pStyle is "custom" then
-		--- put circle path centered at point [16,16] with radius 16 into mThumbVector
-		-- put path "M16,0 A16,16 0 0,1 16,32 A16,16 0 0,1 16,0Z" into mThumbVector
-      -- put "M16,0 A16,16 0 0,1 16,32 A16,16 0 0,1 16,0Z" into mThumbSVGPath
-		-- log [mThumbSVGPath]
+		-- Do nothing
 	end if
 	put pStyle into mThumbShape
 
@@ -349,6 +388,76 @@ private handler setThumbShape(in pStyle as String)
 	OnMouseMove()
 	OnGeometryChanged()
 	redraw all
+end handler
+
+--------------------------------------------------------------------------  Save & Load --------------------------------------------------------------------------------------
+
+public handler OnSave(out rProp as Array)
+	put mCornerRadius into rProp["cornerRadius"]
+	put mHoriz into rProp["horizontalOrentation"]
+	put mBorderWidth into rProp["borderWidth"]
+	put mThumbSVGPath into rProp["thumbSVGPath"]
+	put mThumbShape into rProp["thumbShape"]
+	put mMargin into rProp["margin"]
+	if mHiliteColor is not nothing then
+		put colorToString( mHiliteColor, true ) into rProp["hiliteColor"]
+	end if
+	if mThumbFillColor is not nothing then
+		put colorToString( mThumbFillColor, true ) into rProp["thumbFillColor"]
+	end if
+	put mPercent into rProp["percentageValue"]
+
+	/*
+	put the bounding box of mThumbVector into tThumbBounds
+	put the height of tThumbBounds into mThumbHeight
+	put the width of tThumbBounds into mThumbWidth
+
+	mOnlyFillWhileMoving
+   mMouseDown
+	mRailBarColor
+   put (my height / 2) +mMargin into mTop
+   put (my width / 2) +mMargin into mFillBarRight
+    mFillBarRect
+	*/
+end handler
+public handler OnLoad(in rProp as Array)
+	put my script object into mE
+	if "margin" is not among the keys of rProp then
+		put 32 into mMargin
+	else
+		put rProp["margin"] into mMargin
+	end if
+
+	if "cornerRadius" is not among the keys of rProp then
+		put 15 into mCornerRadius
+	else
+		put rProp["cornerRadius"] into mCornerRadius
+	end if
+	put rProp["horizontalOrentation"] into mHoriz
+	if "borderWidth" is not among the keys of rProp then
+		put 0 into mBorderWidth
+	else
+		put rProp["borderWidth"] into mBorderWidth
+	end if
+	setThumbShape( rProp["thumbShape"] )
+	if rProp["thumbShape"] is "custom" then
+		setThumbSVGPath( rProp["thumbSVGPath"] )
+	end if
+	if "thumbFillColor" is not among the keys of rProp then
+		put the color of my foreground paint into mThumbFillColor
+	else
+		put stringToColor( rProp["thumbFillColor"]) into mThumbFillColor
+	end if
+
+	put rProp["percentageValue"] into mPercent
+	setPercentVal(mPercent)
+
+	if "hiliteColor" is not among the keys of rProp then
+		put the color of my focus paint into mHiliteColor
+	else
+		put stringToColor( rProp["hiliteColor"]) into mHiliteColor
+	end if
+	-- OnMouseMove()
 end handler
 
 --------------------------------------------------------------------------  Creating & Redrawing --------------------------------------------------------------------------------------
@@ -420,7 +529,7 @@ public handler OnPaint()
 	variable tH as Integer
 	variable tW as Integer
 	put my height into tH
-   put my width into tW
+    put my width into tW
 
 	if mOnlyFillWhileMoving is false then --- rendereed while dragging
 		set the paint of this canvas to solid paint with mHiliteColor
@@ -506,6 +615,23 @@ public handler OnPaint()
          end layer on this canvas
       end if
    end if
+
+   if mLabel is not nothing and mLabel is not the empty string then
+     set the font of this canvas to my font
+	 set the paint of this canvas to my foreground paint
+      -- fill text mLabel at point [tW * 0.5, tH * 0.5 ]  on this canvas
+     ---  fill text mLabel at top left of my bounds on this canvas
+      fill text mLabel at top of my bounds on this canvas
+   end if
+
+    if mShowPercentageValue then
+     set the font of this canvas to my font
+	  set the paint of this canvas to my foreground paint
+      -- fill text mLabel at point [tW * 0.5, tH * 0.5 ]  on this canvas
+     ---  fill text mLabel at top left of my bounds on this canvas
+      fill text (mPercent formatted as string) at bottom of my bounds on this canvas
+   end if
+
       --------- Outline the Widget's rect --------
     	-- set the stroke width of this canvas to (tW * 0.02)
       -- set the paint of this canvas to solid paint with color [0,0,0,1]

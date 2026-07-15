@@ -8,6 +8,10 @@ author: Paul McClernan
 
 version: 0.3
 
+Name: label
+
+Type: property
+
 Name: mouseMove
 
 Type: message
