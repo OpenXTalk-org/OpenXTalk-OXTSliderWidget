@@ -24,6 +24,12 @@
   <metadata key="label.default"></metadata>
   <metadata key="label.section">Basic</metadata>
   <metadata key="label.order">3</metadata>
+  <property name="labelAlign" get="string" set="string"/>
+  <metadata key="labelAlign.editor">com.livecode.pi.enum</metadata>
+  <metadata key="labelAlign.options">Center,CenterLeft,CenterRight,CenterTop,CenterBottom,Left,BottomLeft,Right,BottomRight</metadata>
+  <metadata key="labelAlign.default">Center</metadata>
+  <metadata key="labelAlign.label">Label text alignment</metadata>
+  <handler name="setLabelAlign" parameters="in string" return="any"/>
   <property name="percentageValue" get="real" set="real"/>
   <metadata key="percentageValue.editor">com.livecode.pi.real</metadata>
   <handler name="setPercentVal" parameters="in real" return="any"/>
@@ -45,10 +51,14 @@
   <metadata key="horizontalOrentation.default">false</metadata>
   <metadata key="horizontalOrentation.section">Basic</metadata>
   <handler name="setHorizOrientation" parameters="in boolean" return="any"/>
+  <property name="foregroundColor" get="string" set="string"/>
   <metadata key="foregroundColor.editor">com.livecode.pi.color</metadata>
   <metadata key="foregroundColor.default"></metadata>
   <metadata key="foregroundColor.section">Colors</metadata>
-  <metadata key="foregroundColor.label">foregroundColor</metadata>
+  <metadata key="foregroundColor.label">Fill color</metadata>
+  <metadata key="foregroundColor.group">Foreground fill</metadata>
+  <handler name="getForegroundColor" parameters="" return="string"/>
+  <handler name="setForegroundColor" parameters="in string" return="nothing"/>
   <metadata key="backgroundColor.editor">com.livecode.pi.color</metadata>
   <metadata key="backgroundColor.default"></metadata>
   <metadata key="backgroundColor.section">Colors</metadata>
@@ -77,8 +87,6 @@
   <metadata key="borderWidth.section">Basic</metadata>
   <metadata key="borderWidth.editor">com.livecode.pi.integer</metadata>
   <metadata key="borderWidth.user_visible">true</metadata>
-  <property name="textFont" get="optional string" set="string"/>
-  <property name="textSize" get="optional integer" set="integer"/>
   <property name="railBarColor" get="string" set="string"/>
   <metadata key="railBarColor.label">Rail Bar Color</metadata>
   <metadata key="railBarColor.section">Colors</metadata>
