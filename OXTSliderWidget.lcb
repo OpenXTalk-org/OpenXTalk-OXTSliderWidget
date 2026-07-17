@@ -47,6 +47,14 @@ Name: outerShadowColor
 
 Type: property
 
+Name: textFont
+
+Type: property
+
+Name: textSize
+
+Type: property
+
 **/
 widget org.openxtalk.widget.oxtslider
 
@@ -72,33 +80,7 @@ metadata svgicon is "M28.057,3.454v2.284c0,.229-.172.413-.386.413h-11.867c-.556,
 
 -------------------------------------------------------------------  Properties --------------------------------------------------------------------------------------
 
-private variable mLabel as optional String
-property label              get mLabel              set setLabel
-metadata label.default is ""
-metadata label.section is "Basic"
-metadata label.order is "3"
-private handler setLabel(in pLabel as String)
-	put pLabel into mLabel
-	redraw all
-end handler
-
-private variable mLabelAlign as String
-property "labelAlign"       get mLabelAlign      set setLabelAlign
-metadata labelAlign.editor is "com.livecode.pi.enum"
-metadata labelAlign.options is "Center,CenterLeft,CenterRight,CenterTop,CenterBottom,Left,BottomLeft,Right,BottomRight"
-metadata labelAlign.default is "Center"
-metadata labelAlign.label is "Label text alignment"
-public handler setLabelAlign( in pAlign as String)
-   if pAlign is "Center" or pAlign is "CenterLeft" or pAlign is "CenterRight" or pAlign is "CenterTop" or pAlign is "CenterBottom" \
-       or pAlign is "Left" or pAlign is "BottomLeft" or pAlign is "Right" or pAlign is "BottomRight" then
-      put pAlign into mLabelAlign
-   else
-      throw "labelAlign must be one of Center,CenterLeft,CenterRight,CenterTop,CenterBottom,Left,BottomLeft,Right,BottomRight, or empty"
-      put "Center" into mLabelAlign
-   end if
-	-- OnGeometryChanged()
-	redraw all
-end handler
+private variable mMouseDown as optional Boolean
 
 private variable mFillBarRect as Rectangle
 private variable mTop as Number
@@ -144,8 +126,6 @@ public handler setShowPercentageValue(in pBoolean as Boolean)
    OnGeometryChanged()
 	redraw all
 end handler
-
-private variable mMouseDown as optional Boolean
 
 private variable mOnlyFillWhileMoving as Boolean
 property onlyFillWhileMoving	 get mOnlyFillWhileMoving	  set setOnlyFillWhileMoving
@@ -203,14 +183,14 @@ public handler getForegroundColor() returns String
 	if mForegroundColor is nothing then
 		return ""
 	else
-   	return colorToString( mForegroundColor, false)
+     	return colorToString( mForegroundColor, false)
 	end if
 end handler
 public handler setForegroundColor(in pColor as String) returns nothing
 	if pColor is "" then
 		put nothing into mForegroundColor
 	else
-   	put stringToColor(pColor) into mForegroundColor
+    	put stringToColor(pColor) into mForegroundColor
 	end if
    redraw all
 end handler
@@ -230,10 +210,64 @@ metadata focusColor.default is ""
 metadata focusColor.section is "Colors"
 metadata focusColor.label is "focusColor"
 
-/*
-private variable mLabelTextColor         as Color
+
+private variable mLabel as optional String
+property label              get mLabel              set setLabel
+metadata label.default is ""
+metadata label.section is "Basic"
+metadata label.order is "3"
+private handler setLabel(in pLabel as String)
+	put pLabel into mLabel
+	redraw all
+end handler
+
+private variable mLabelAlign as String
+property "labelAlign"       get mLabelAlign      set setLabelAlign
+metadata labelAlign.section is "Text"
+metadata labelAlign.editor is "com.livecode.pi.enum"
+metadata labelAlign.options is "Center,CenterLeft,CenterRight,CenterTop,CenterBottom,Left,BottomLeft,Right,BottomRight"
+metadata labelAlign.default is "Center"
+metadata labelAlign.label is "Label text alignment"
+public handler setLabelAlign( in pAlign as String)
+   if pAlign is "Center" or pAlign is "CenterLeft" or pAlign is "CenterRight" or pAlign is "CenterTop" or pAlign is "CenterBottom" \
+       or pAlign is "Left" or pAlign is "BottomLeft" or pAlign is "Right" or pAlign is "BottomRight" then
+      put pAlign into mLabelAlign
+   else
+      throw "labelAlign must be one of Center,CenterLeft,CenterRight,CenterTop,CenterBottom,Left,BottomLeft,Right,BottomRight, or empty"
+      put "Center" into mLabelAlign
+   end if
+	-- OnGeometryChanged()
+	redraw all
+end handler
+
+private variable mLabelTextFont          as optional String
+property labelTextFont      get mLabelTextFont           set setLabelTextFont
+metadata labelTextFont.label is "Label Text Font"
+metadata labelTextFont.section is "Text"
+metadata labelTextFont.editor is "com.livecode.pi.font"
+-- metadata textFont.default is "(System)"
+-- metadata labelTextFont.user_visible is "true"
+private handler setLabelTextFont(in pFont as optional any)
+    if pFont is the empty string then 
+    	put nothing into mLabelTextFont
+    else
+    	put pFont into mLabelTextFont
+	end if
+	redraw all
+end handler
+
+private variable mLabelTextSize          as optional Integer
+property labelTextSize           get mLabelTextSize           set setLabelTextSize
+metadata labelTextSize.label is "Label Text Size"
+metadata labelTextSize.editor is "com.livecode.pi.integer"
+private handler setLabelTextSize(in pTextSize as Integer)
+	put pTextSize into mLabelTextSize
+	redraw all
+end handler
+
+private variable mLabelTextColor         as optional Color
 property labelTextColor          get getLabelTextColor        set setLabelTextColor
-metadata labelTextColor.label is "Text Color"
+metadata labelTextColor.label is "Label Text Color"
 metadata labelTextColor.section is "Colors"
 metadata labelTextColor.editor is "com.livecode.pi.color"
 metadata labelTextColor.default is "127,0,255"
@@ -246,7 +280,6 @@ private handler setLabelTextColor(in pColor as String)
 	-- updatePaint(mPaintStyle)
 	redraw all
 end handler
-*/
 
 private variable mOuterBorderColor       as Color
 property outerBorderColor          get getOuterBorderColor        set setOuterBorderColor
@@ -297,22 +330,6 @@ private handler setBorderWidth(in pWidth as Real)
 	put pWidth into mBorderWidth
 	redraw all
 end handler
-
-/*
-private variable mTextFont          as optional String
-property textFont           get mTextFont           set setTextFont
-private handler setTextFont(in pTextFont as String)
-	put pTextFont into mTextFont
-	redraw all
-end handler
-
-private variable mTextSize          as optional Integer
-property textSize           get mTextSize           set setTextSize
-private handler setTextSize(in pTextSize as Integer)
-	put pTextSize into mTextSize
-	redraw all
-end handler
-*/
 
 private variable mRailBarColor as Color
 property railBarColor       get getrailBarColor     set setrailBarColor
@@ -443,9 +460,14 @@ public handler OnSave(out rProp as Array)
 	if mThumbFillColor is not nothing then
 		put colorToString( mThumbFillColor, true ) into rProp["thumbFillColor"]
 	end if
-
 	if mLabel is not nothing and mLabel is not the empty string then
 		put mLabel into rProp["label"]
+	end if
+	if mLabelTextColor is not nothing then
+		put colorToString( mLabelTextColor, true ) into rProp["labelTextColor"]
+	end if
+	if mLabelTextFont is not nothing then
+		put mLabelTextFont into rProp["labelTextFont"]
 	end if
 	put mPercent into rProp["percentageValue"]
 	put mShowPercentageValue into rProp["showPercentageValue"]
@@ -497,6 +519,18 @@ public handler OnLoad(in rProp as Array)
 	else
 		put stringToColor( rProp["thumbFillColor"]) into mThumbFillColor
 	end if
+	if "labelTextColor" is not among the keys of rProp then
+		put the color of my foreground paint into mLabelTextColor
+	else
+		put stringToColor( rProp["labelTextColor"]) into mLabelTextColor
+	end if
+	if "labelTextSize" is among the keys of rProp then
+		put rProp["labelTextSize"] into mLabelTextCSize
+	end if
+	if "labelTextFont" is among the keys of rProp then
+		put rProp["labelTextFont"] into mLabelTextFont
+	end if
+
 	put rProp["percentageValue"] into mPercent
 	setPercentVal(mPercent)
 	put rProp["showPercentageValue"] into mShowPercentageValue
@@ -542,11 +576,9 @@ public handler OnCreate()
 	put the color of my focus paint into mHiliteColor -- on macOS focus color is what we want not 'the highlight paint'
 	-- set the alpha of mHiliteColor to 1.0
 	-- log [the alpha of mHiliteColor]
-
 	put mThumbWidth into mMargin
-   --  log mMargin
-   -- log [mThumbHeight,mThumbWidth]
-	put 16 into mCornerRadius
+   -- log [mMargin,mThumbHeight,mThumbWidth]
+	put 15 into mCornerRadius
 	put false into mOnlyFillWhileMoving
    put true into mHoriz
    put false into mMouseDown
@@ -604,7 +636,11 @@ public handler OnPaint()
 											with radius mCornerRadius on this canvas
 
     if mBorderWidth > 0 then
-		set the paint of this canvas to my foreground paint
+        if mForegroundColor is not nothing then
+        	set the paint of this canvas to solid paint with mHiliteColor
+		else -- inherit the color
+			set the paint of this canvas to my foreground paint
+		end if
 		set the stroke width of this canvas to mBorderWidth
 		stroke rounded rectangle path of rectangle \
 										[0+mMargin, 0+mMargin, my width - mMargin , my height -mMargin ] \
@@ -645,7 +681,13 @@ public handler OnPaint()
 
 		if mBorderWidth > 0 then
 			set the stroke width of this canvas to mBorderWidth
-			set the paint of this canvas to my foreground paint
+			
+			if mForegroundColor is not nothing then
+        		set the paint of this canvas to solid paint with mHiliteColor
+			else -- inherit the color
+				set the paint of this canvas to my foreground paint
+			end if
+			
 			stroke rounded rectangle path of rectangle \
 					  [0+mMargin, 0+mMargin, my width - mMargin , my height -mMargin ] \
 							with radius mCornerRadius on this canvas
@@ -671,19 +713,17 @@ public handler OnPaint()
 		variable tTextBounds as Rectangle
 		variable tTextVOffset as Real
 		variable tTextHOffset as Real
-		variable tTextVscale as Real
-		variable tTextHscale as Real
-
+		
 		set the font of this canvas to my font
 		measure mLabel on this canvas
 		put the result into tTextBounds
 		put rectangle path of tTextBounds into tPath
 		put ( the bottom of my bounds - the bottom of tTextBounds ) into tTextVOffset
 		put ( the right of my bounds - the right of tTextBounds ) into tTextHOffset
-		if mForegroundColor is not nothing then
-			set the paint of this canvas to solid paint with mForegroundColor
+		if mLabelTextColor is not nothing then
+			set the paint of this canvas to solid paint with mLabelTextColor
 		else
-			set the paint of this canvas to my foreground paint -- my border paint? my top paint? What are the others?
+			set the paint of this canvas to my foreground paint
 		end if
 	  if mLabelAlign is "Center" then
 		  fill text mLabel at center of my bounds on this canvas
@@ -715,12 +755,15 @@ public handler OnPaint()
 
     if mShowPercentageValue then
      set the font of this canvas to my font
-	  set the paint of this canvas to my foreground paint
+	    if mForegroundColor is not nothing then
+        	set the paint of this canvas to solid paint with mHiliteColor
+		else -- inherit the color
+			set the paint of this canvas to my foreground paint
+		end if
       -- fill text mLabel at point [tW * 0.5, tH * 0.5 ]  on this canvas
      ---  fill text mLabel at top left of my bounds on this canvas
       fill text (mPercent formatted as string) at bottom of my bounds on this canvas
    end if
-
       --------- Outline the Widget's rect --------
     	-- set the stroke width of this canvas to (tW * 0.02)
       -- set the paint of this canvas to solid paint with color [0,0,0,1]
