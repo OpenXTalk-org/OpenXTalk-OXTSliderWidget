@@ -8,8 +8,8 @@
   <requires name="com.livecode.canvas"/>
   <requires name="com.livecode.library.widgetutils"/>
   <requires name="com.livecode.engine"/>
-  <requires name="com.livecode.widget"/>
   <requires name="com.livecode.arithmetic"/>
+  <requires name="com.livecode.widget"/>
   <requires name="com.livecode.binary"/>
   <requires name="com.livecode.list"/>
   <requires name="com.livecode.logic"/>
@@ -20,16 +20,6 @@
   <requires name="com.livecode.byte"/>
   <metadata key="preferredSize">400,90</metadata>
   <metadata key="svgicon">M28.057,3.454v2.284c0,.229-.172.413-.386.413h-11.867c-.556,1.32-1.789,2.245-3.226,2.245s-2.67-.925-3.226-2.245H1.599c-.213,0-.386-.185-.386-.413v-2.284c0-.229.172-.413.386-.413h7.754c.556-1.32,1.79-2.245,3.226-2.245s2.67.925,3.226,2.245h11.867c.213,0,.386.185.386.413ZM12.579,2.449c-1.104,0-2.002.963-2.002,2.146s.898,2.146,2.002,2.146,2.001-.963,2.001-2.146-.898-2.146-2.001-2.146Z</metadata>
-  <property name="label" get="optional string" set="string"/>
-  <metadata key="label.default"></metadata>
-  <metadata key="label.section">Basic</metadata>
-  <metadata key="label.order">3</metadata>
-  <property name="labelAlign" get="string" set="string"/>
-  <metadata key="labelAlign.editor">com.livecode.pi.enum</metadata>
-  <metadata key="labelAlign.options">Center,CenterLeft,CenterRight,CenterTop,CenterBottom,Left,BottomLeft,Right,BottomRight</metadata>
-  <metadata key="labelAlign.default">Center</metadata>
-  <metadata key="labelAlign.label">Label text alignment</metadata>
-  <handler name="setLabelAlign" parameters="in string" return="any"/>
   <property name="percentageValue" get="real" set="real"/>
   <metadata key="percentageValue.editor">com.livecode.pi.real</metadata>
   <handler name="setPercentVal" parameters="in real" return="any"/>
@@ -71,6 +61,30 @@
   <metadata key="focusColor.default"></metadata>
   <metadata key="focusColor.section">Colors</metadata>
   <metadata key="focusColor.label">focusColor</metadata>
+  <property name="label" get="optional string" set="string"/>
+  <metadata key="label.default"></metadata>
+  <metadata key="label.section">Basic</metadata>
+  <metadata key="label.order">3</metadata>
+  <property name="labelAlign" get="string" set="string"/>
+  <metadata key="labelAlign.section">Text</metadata>
+  <metadata key="labelAlign.editor">com.livecode.pi.enum</metadata>
+  <metadata key="labelAlign.options">Center,CenterLeft,CenterRight,CenterTop,CenterBottom,Left,BottomLeft,Right,BottomRight</metadata>
+  <metadata key="labelAlign.default">Center</metadata>
+  <metadata key="labelAlign.label">Label text alignment</metadata>
+  <handler name="setLabelAlign" parameters="in string" return="any"/>
+  <property name="labelTextFont" get="optional string" set="optional any"/>
+  <metadata key="labelTextFont.label">Label Text Font</metadata>
+  <metadata key="labelTextFont.section">Text</metadata>
+  <metadata key="labelTextFont.editor">com.livecode.pi.font</metadata>
+  <property name="labelTextSize" get="optional integer" set="integer"/>
+  <metadata key="labelTextSize.label">Label Text Size</metadata>
+  <metadata key="labelTextSize.editor">com.livecode.pi.integer</metadata>
+  <property name="labelTextColor" get="string" set="string"/>
+  <metadata key="labelTextColor.label">Label Text Color</metadata>
+  <metadata key="labelTextColor.section">Colors</metadata>
+  <metadata key="labelTextColor.editor">com.livecode.pi.color</metadata>
+  <metadata key="labelTextColor.default">127,0,255</metadata>
+  <metadata key="labelTextColor.user_visible">true</metadata>
   <property name="outerBorderColor" get="string" set="string"/>
   <metadata key="outerBorderColor.label">Outer Border Color</metadata>
   <metadata key="outerBorderColor.section">Colors</metadata>

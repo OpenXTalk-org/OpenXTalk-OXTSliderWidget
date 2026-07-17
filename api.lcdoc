@@ -52,4 +52,12 @@ Name: outerShadowColor
 
 Type: property
 
+Name: textFont
+
+Type: property
+
+Name: textSize
+
+Type: property
+
 
