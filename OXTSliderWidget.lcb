@@ -226,7 +226,7 @@ property "labelAlign"       get mLabelAlign      set setLabelAlign
 metadata labelAlign.section is "Text"
 metadata labelAlign.editor is "com.livecode.pi.enum"
 metadata labelAlign.options is "Center,CenterLeft,CenterRight,CenterTop,CenterBottom,Left,BottomLeft,Right,BottomRight"
-metadata labelAlign.default is "Center"
+metadata labelAlign.default is "CenterTop"
 metadata labelAlign.label is "Label text alignment"
 public handler setLabelAlign( in pAlign as String)
    if pAlign is "Center" or pAlign is "CenterLeft" or pAlign is "CenterRight" or pAlign is "CenterTop" or pAlign is "CenterBottom" \
@@ -240,12 +240,12 @@ public handler setLabelAlign( in pAlign as String)
 	redraw all
 end handler
 
-private variable mLabelTextFont          as optional String
-property labelTextFont      get mLabelTextFont           set setLabelTextFont
-metadata labelTextFont.label is "Label Text Font"
+private variable mLabelTextFont as optional any
+property labelTextFont get mLabelTextFont           set setLabelTextFont
 metadata labelTextFont.section is "Text"
+metadata labelTextFont.label is "Label Text Font"
 metadata labelTextFont.editor is "com.livecode.pi.font"
--- metadata textFont.default is "(System)"
+metadata labelTextFont.default is "(System)"
 -- metadata labelTextFont.user_visible is "true"
 private handler setLabelTextFont(in pFont as optional any)
     if pFont is the empty string then
@@ -256,11 +256,15 @@ private handler setLabelTextFont(in pFont as optional any)
 	redraw all
 end handler
 
-private variable mLabelTextSize          as optional Integer
+private variable mLabelTextSize as Integer
 property labelTextSize           get mLabelTextSize           set setLabelTextSize
+metadata labelTextSize.section is "Text"
 metadata labelTextSize.label is "Label Text Size"
-metadata labelTextSize.editor is "com.livecode.pi.integer"
-private handler setLabelTextSize(in pTextSize as Integer)
+metadata labelTextSize.default is "16"
+metadata labelTextSize.step is "1"
+metadata labelTextSize.min is "0"
+
+private handler setLabelTextSize(in pTextSize as Real)
 	put pTextSize into mLabelTextSize
 	redraw all
 end handler
@@ -286,7 +290,7 @@ property outerBorderColor          get getOuterBorderColor        set setOuterBo
 metadata outerBorderColor.label is "Outer Border Color"
 metadata outerBorderColor.section is "Colors"
 metadata outerBorderColor.editor is "com.livecode.pi.colorwithalpha"
-metadata labelTextColor.default is "127,127,127,127"
+metadata outerBorderColor.default is "127,127,127,127"
 metadata outerBorderColor.user_visible is "true"
 private handler getOuterBorderColor() returns String
 	return colorToString( mOuterBorderColor, false)
@@ -383,10 +387,13 @@ private handler setThumbSVGPath(in pSVGPath as String)
 			 put path pSVGPath into mThumbVector
 
           constrainPathToRect( rectangle [0,0,40,40], mThumbVector ) --- constrainPathToRect is in  com.livecode.library.widgetutils
-
+			 put 40 into mThumbHeight
+			 put 40 into mThumbWidth
+			 /*
 			 put the bounding box of mThumbVector into tThumbBounds
 			 put the height of tThumbBounds into mThumbHeight
 			 put the width of tThumbBounds into mThumbWidth
+			 */
 		 else
 			 throw "Thumb SVG path strings should be closed paths ending with char 'Z' or 'z'"
        end if
@@ -403,7 +410,7 @@ property thumbShape          get mThumbShape           set setThumbShape
 metadata thumbShape.editor is "com.livecode.pi.enum"
 metadata thumbShape.label   is "Thumb Style"
 metadata thumbShape.default is "thumb"
-metadata thumbShape.options is "none,pin,thumb,rectangular,notch,rectangle,circle,custom"
+metadata thumbShape.options is "none,pin,thumb,rectangular,notch,rectangle,roundrect,circle,custom"
 
 private handler setThumbShape(in pStyle as String)
 	variable tThumbBounds as optional Rectangle
@@ -420,6 +427,9 @@ private handler setThumbShape(in pStyle as String)
 	else if pStyle is "rectangle" then
 		put path "M19.5,35.94H0V0h19.49v35.93h0Z" into mThumbVector
 		put "M19.5,35.94H0V0h19.49v35.93h0Z" into mThumbSVGPath
+	else if pStyle is "roundrect" then
+		put path "M11.18,0C6.44,0,2.49,3.75,1,8.03-.23,11.21-.04,14.68.1,18.05c.46,5.06,3.66,10.34,8.82,11.65,2.35.5,4.77.19,7.15.28h13.6c5-.44,8.71-4.9,9.81-9.56.69-2.78.53-5.65.41-8.46-.46-5.06-3.66-10.34-8.82-11.65-2.35-.5-4.77-.19-7.15-.28h-12.74v-.03h0Z" into mThumbVector
+		put "M11.18,0C6.44,0,2.49,3.75,1,8.03-.23,11.21-.04,14.68.1,18.05c.46,5.06,3.66,10.34,8.82,11.65,2.35.5,4.77.19,7.15.28h13.6c5-.44,8.71-4.9,9.81-9.56.69-2.78.53-5.65.41-8.46-.46-5.06-3.66-10.34-8.82-11.65-2.35-.5-4.77-.19-7.15-.28h-12.74v-.03h0Z" into mThumbSVGPath
 	 else if pStyle is "pin" then
       	put path "M6.936,39.115c2.082,0,3.921-10.771,4.403-14.278s.734-11.26.734-13.175v-3.241c0-.025,0-3.392,0-3.392,0-1.915-.328-3.467-.734-3.467,0,0-2.354-.711-4.403-.687s-4.379.687-4.379.687c-.405,0-.734,1.552-.734,3.467v6.633c0,1.915.184,9.725.734,13.175s1.945,14.278,4.379,14.278Z" into mThumbVector
 			put "M6.936,39.115c2.082,0,3.921-10.771,4.403-14.278s.734-11.26.734-13.175v-3.241c0-.025,0-3.392,0-3.392,0-1.915-.328-3.467-.734-3.467,0,0-2.354-.711-4.403-.687s-4.379.687-4.379.687c-.405,0-.734,1.552-.734,3.467v6.633c0,1.915.184,9.725.734,13.175s1.945,14.278,4.379,14.278Z" into mThumbSVGPath
@@ -580,8 +590,11 @@ public handler OnCreate()
    -- log [mMargin,mThumbHeight,mThumbWidth]
 	put 15 into mCornerRadius
 	put false into mOnlyFillWhileMoving
-   put true into mHoriz
-   put false into mMouseDown
+   	put true into mHoriz
+   	put false into mMouseDown
+
+   	put the name of my font into mLabelTextFont
+   	put "CenterTop" into mLabelAlign
 	--
 	put color [ 0.5, 0.5, 0.5, 0.5 ] into mRailBarColor -- 50% Grey / 50% Opaque
 	put color [ 0.9, 0.9, 0.9, 1.0 ] into mThumbFillColor -- 50% Grey / 50% Opaque
@@ -714,20 +727,29 @@ public handler OnPaint()
 		variable tTextVOffset as Real
 		variable tTextHOffset as Real
 
+	if mLabelTextFont is not nothing and mLabelTextFont is not "" then
+	    if mLabelTextSize is not nothing and mLabelTextSize is not 0 then
+	  		set the font of this canvas to font mLabelTextFont at size mLabelTextSize
+	  	else
+	        set the font of this canvas to font mLabelTextFont
+	  	end if
+	else
 		set the font of this canvas to my font
-		measure mLabel on this canvas
-		put the result into tTextBounds
-		put rectangle path of tTextBounds into tPath
-		put ( the bottom of my bounds - the bottom of tTextBounds ) into tTextVOffset
-		put ( the right of my bounds - the right of tTextBounds ) into tTextHOffset
-		if mLabelTextColor is not nothing then
-			set the paint of this canvas to solid paint with mLabelTextColor
-		else
-			set the paint of this canvas to my foreground paint
-		end if
-	  if mLabelAlign is "Center" then
-		  fill text mLabel at center of my bounds on this canvas
-	  else if mLabelAlign is "Left" or mLabelAlign is "" then
+	end if
+	measure mLabel on this canvas
+	put the result into tTextBounds
+	put rectangle path of tTextBounds into tPath
+	put ( the bottom of my bounds - the bottom of tTextBounds ) into tTextVOffset
+	put ( the right of my bounds - the right of tTextBounds ) into tTextHOffset
+	if mLabelTextColor is not nothing then
+		set the paint of this canvas to solid paint with mLabelTextColor
+	else
+		set the paint of this canvas to my foreground paint
+	end if
+
+	if mLabelAlign is "Center" then
+		fill text mLabel at center of my bounds on this canvas
+	else if mLabelAlign is "Left" or mLabelAlign is "" then
 		  fill text mLabel at top left of my bounds on this canvas
 	  else if mLabelAlign is "CenterLeft" then
 		  -- fill text mLabel at center left of my bounds on this canvas
@@ -754,7 +776,7 @@ public handler OnPaint()
    end if
 
     if mShowPercentageValue then
-     set the font of this canvas to my font
+       set the font of this canvas to my font
 	    if mForegroundColor is not nothing then
         	set the paint of this canvas to solid paint with mHiliteColor
 		else -- inherit the color

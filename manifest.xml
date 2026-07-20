@@ -69,16 +69,20 @@
   <metadata key="labelAlign.section">Text</metadata>
   <metadata key="labelAlign.editor">com.livecode.pi.enum</metadata>
   <metadata key="labelAlign.options">Center,CenterLeft,CenterRight,CenterTop,CenterBottom,Left,BottomLeft,Right,BottomRight</metadata>
-  <metadata key="labelAlign.default">Center</metadata>
+  <metadata key="labelAlign.default">CenterTop</metadata>
   <metadata key="labelAlign.label">Label text alignment</metadata>
   <handler name="setLabelAlign" parameters="in string" return="any"/>
-  <property name="labelTextFont" get="optional string" set="optional any"/>
-  <metadata key="labelTextFont.label">Label Text Font</metadata>
+  <property name="labelTextFont" get="optional any" set="optional any"/>
   <metadata key="labelTextFont.section">Text</metadata>
+  <metadata key="labelTextFont.label">Label Text Font</metadata>
   <metadata key="labelTextFont.editor">com.livecode.pi.font</metadata>
-  <property name="labelTextSize" get="optional integer" set="integer"/>
+  <metadata key="labelTextFont.default">(System)</metadata>
+  <property name="labelTextSize" get="integer" set="real"/>
+  <metadata key="labelTextSize.section">Text</metadata>
   <metadata key="labelTextSize.label">Label Text Size</metadata>
-  <metadata key="labelTextSize.editor">com.livecode.pi.integer</metadata>
+  <metadata key="labelTextSize.default">16</metadata>
+  <metadata key="labelTextSize.step">1</metadata>
+  <metadata key="labelTextSize.min">0</metadata>
   <property name="labelTextColor" get="string" set="string"/>
   <metadata key="labelTextColor.label">Label Text Color</metadata>
   <metadata key="labelTextColor.section">Colors</metadata>
@@ -89,7 +93,7 @@
   <metadata key="outerBorderColor.label">Outer Border Color</metadata>
   <metadata key="outerBorderColor.section">Colors</metadata>
   <metadata key="outerBorderColor.editor">com.livecode.pi.colorwithalpha</metadata>
-  <metadata key="labelTextColor.default">127,127,127,127</metadata>
+  <metadata key="outerBorderColor.default">127,127,127,127</metadata>
   <metadata key="outerBorderColor.user_visible">true</metadata>
   <property name="cornerRadius" get="real" set="real"/>
   <metadata key="cornerRadius">Corner Radius</metadata>
@@ -124,7 +128,7 @@
   <metadata key="thumbShape.editor">com.livecode.pi.enum</metadata>
   <metadata key="thumbShape.label">Thumb Style</metadata>
   <metadata key="thumbShape.default">thumb</metadata>
-  <metadata key="thumbShape.options">none,pin,thumb,rectangular,notch,rectangle,circle,custom</metadata>
+  <metadata key="thumbShape.options">none,pin,thumb,rectangular,notch,rectangle,roundrect,circle,custom</metadata>
   <handler name="OnSave" parameters="out array" return="any"/>
   <handler name="OnLoad" parameters="in array" return="any"/>
   <property name="margin" get="number" set="number"/>
