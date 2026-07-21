@@ -15,6 +15,7 @@ import module org.openxtalk.widget.oxtslider
   handler setPercentVal(in pPercent as Number) returns optional any
   handler setShowPercentageValue(in pBoolean as Boolean) returns optional any
   handler setOnlyFillWhileMoving(in pBoolean as Boolean) returns optional any
+  handler setThumbShadow(in pBoolean as Boolean) returns optional any
   handler setHorizOrientation(in pBoolean as Boolean) returns optional any
   handler getForegroundColor() returns String
   handler setForegroundColor(in pColor as String) returns nothing
