@@ -445,7 +445,7 @@ property thumbShape          get mThumbShape           set setThumbShape
 metadata thumbShape.editor is "com.livecode.pi.enum"
 metadata thumbShape.label   is "Thumb Style"
 metadata thumbShape.default is "thumb"
-metadata thumbShape.options is "none,pin,thumb,rectangular,notch,rectangle,roundrect,oval,circle,custom"
+metadata thumbShape.options is "none,pin,thumb,rectangular,notch,rectangle,bean,roundrect,oval,circle,custom"
 
 private handler setThumbShape(in pStyle as String)
 	variable tThumbBounds as optional Rectangle
@@ -462,6 +462,9 @@ private handler setThumbShape(in pStyle as String)
 	else if pStyle is "rectangle" then
 		put path "M19.5,35.94H0V0h19.49v35.93h0Z" into mThumbVector
 		put "M19.5,35.94H0V0h19.49v35.93h0Z" into mThumbSVGPath
+	else if pStyle is "bean" then
+		put path "M8.4,0c2.14,0,4.01.26,5.57,1.81,2.61,2.61,2.62,5.47,2.62,5.47v25.33s-.04,3.74-2.22,5.52c-1.72,1.41-4,1.86-6.75,1.86s-3.63-.19-5.5-1.88C.12,36.31.01,33.51.01,33.51.01,33.51.04,12.21,0,7.69,0,6.51,1.25,3,3.29,1.59s2.97-1.59,5.11-1.59Z" into mThumbVector
+		put "M8.4,0c2.14,0,4.01.26,5.57,1.81,2.61,2.61,2.62,5.47,2.62,5.47v25.33s-.04,3.74-2.22,5.52c-1.72,1.41-4,1.86-6.75,1.86s-3.63-.19-5.5-1.88C.12,36.31.01,33.51.01,33.51.01,33.51.04,12.21,0,7.69,0,6.51,1.25,3,3.29,1.59s2.97-1.59,5.11-1.59Z" into mThumbSVGPath
 	else if pStyle is "roundrect" then
 		put path "M11.18,0C6.44,0,2.49,3.75,1,8.03-.23,11.21-.04,14.68.1,18.05c.46,5.06,3.66,10.34,8.82,11.65,2.35.5,4.77.19,7.15.28h13.6c5-.44,8.71-4.9,9.81-9.56.69-2.78.53-5.65.41-8.46-.46-5.06-3.66-10.34-8.82-11.65-2.35-.5-4.77-.19-7.15-.28h-12.74v-.03h0Z" into mThumbVector
 		put "M11.18,0C6.44,0,2.49,3.75,1,8.03-.23,11.21-.04,14.68.1,18.05c.46,5.06,3.66,10.34,8.82,11.65,2.35.5,4.77.19,7.15.28h13.6c5-.44,8.71-4.9,9.81-9.56.69-2.78.53-5.65.41-8.46-.46-5.06-3.66-10.34-8.82-11.65-2.35-.5-4.77-.19-7.15-.28h-12.74v-.03h0Z" into mThumbSVGPath
@@ -635,7 +638,7 @@ public handler OnCreate()
 
 	-- create intitial 50% position bar
    put 0.5 into mPercentVal
-	put 0.5 into mPercent
+   put 0.5 into mPercent
    put (my height / 2) +mMargin into mTop
    put (my width / 2) +mMargin into mFillBarRight
    if mHoriz then
@@ -734,14 +737,20 @@ public handler OnPaint()
 				end if
 			end if
 			--------------------- PAINT THE THUMNB SVG PATH  -------------------
-         begin layer with outer shadow effect on this canvas
-				put mThumbVector into tPath
-				rotate tPath by -90 -- ROTATE PATH FOR VERTICAL
-				translate tPath by [tW/2 - (mThumbHeight/2), mTop + (mThumbWidth/2) ]
+			put mThumbVector into tPath
+			rotate tPath by -90 -- ROTATE PATH FOR VERTICAL
+			translate tPath by [tW/2 - (mThumbHeight/2), mTop + (mThumbWidth/2) ]
+			if mThumbShadow is true then
+	         begin layer with outer shadow effect on this canvas
+				   set the paint of this canvas to solid paint with mThumbFillColor
+					fill tPath on this canvas
+	         end layer on this canvas
+			else
 				set the paint of this canvas to solid paint with mThumbFillColor
-            fill tPath on this canvas
-         end layer on this canvas
+				fill tPath on this canvas
+			end if
       end if
+    
    end if
 	--------------------------------------------------------------------------- LABEL TEXTS ---------
    if mLabel is not nothing and mLabel is not the empty string then
