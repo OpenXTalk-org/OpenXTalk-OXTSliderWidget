@@ -1,13 +1,14 @@
-﻿script "community.livecode.paulmcclernan.testwidget.__DefaultScript"
+﻿script "org.openxtalk.widget.oxtslider.__DefaultScript"
+on scrollbarBeginning pThumbPos, pPercentage
+   put pThumbPos &cr& pPercentage
+end scrollbarBeginning
 
-on scrollbarBegin pPercentage
-   put pPercentage
-end scrollbarBegin
-
-on scrollbarDrag pPercentage
-   put pPercentage
+on scrollbarDrag pThumbPos, pPercentage
+   put pThumbPos &cr& pPercentage
 end scrollbarDrag
 
-on scrollbarEnd pPercentage
-   put pPercentage
+on scrollbarEnd pThumbPos, pPercentage
+   put pThumbPos &cr& pPercentage
 end scrollbarEnd
+
+

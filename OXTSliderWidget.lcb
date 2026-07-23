@@ -1,7 +1,8 @@
 /**
 
 Description:
-Widget
+This Slider Widget is meant to be a drop-in replacement for
+the scrollBar type "classic control", but with greater customizability.
 
 Name: label
 
@@ -27,13 +28,28 @@ Name: scrollbarBeginning
 
 Type: message
 
+Example:
+on scrollbarBeginning pThumbPos, pPercentage
+   put pThumbPos, pPercentage
+end scrollbarBeginning
+
 Name: scrollbarDrag
 
 Type: message
 
+Example:
+on scrollbarDrag pThumbPos, pPercentage
+   put pThumbPos, pPercentage
+end scrollbarDrag
+
 Name: scrollbarEnd
 
 Type: message
+
+Example:
+on scrollbarEnd pThumbPos, pPercentage
+   put pThumbPos, pPercentage
+end scrollbarEnd
 
 Name: backgroundColor
 
@@ -86,6 +102,80 @@ private variable mFillBarRect as Rectangle
 private variable mTop as Number
 private variable mFillBarRight as Number
 
+private variable mMargin as Number
+property "margin"           get mMargin           set setMargin
+metadata margin.default is "42"
+metadata margin.step is "1"
+metadata margin.min is "0"
+public handler setMargin(in pMargin as Number)
+	put pMargin into mMargin
+	OnGeometryChanged()
+	redraw all
+end handler
+
+-- threeD
+-- private variable mEndValue as Number
+
+private variable mStartValue as optional Number
+property "startValue"	 get mStartValue	  set setStartValue
+metadata startValue.editor is "com.livecode.pi.number"
+metadata startValue.default is "0"
+public handler setStartValue(in pNumber as optional Number )
+	variable tTotal as Number
+	put pNumber into mStartValue
+	put mEndValue - mStartValue into tTotal
+	log [mStartValue, mEndValue, tTotal]
+	put mPercent * tTotal into mThumbPos
+	put mStartValue + mThumbPos into mThumbPos
+	log [mPercent,mThumbPos]
+	redraw all
+end handler
+private variable mEndValue as optional Number
+property "endValue"	 get mEndValue	  set setEndtValue
+metadata endValue.editor is "com.livecode.pi.number"
+metadata endValue.default is "100"
+public handler setEndtValue(in pNumber as optional Number )
+	variable tTotal as Number
+	put pNumber into mEndValue
+	put mEndValue - mStartValue into tTotal
+	log [mStartValue, mEndValue, tTotal]
+	put mPercent * tTotal into mThumbPos
+	put mStartValue + mThumbPos into mThumbPos
+	log [mPercent,mThumbPos]
+	redraw all
+end handler
+
+private variable mThumbPos as Number
+property "thumbPosition"	 get getThumbPos	  set setThumbPos
+property "thumbPos"	 get getThumbPos	  set setThumbPos
+metadata humbPos.editor is "com.livecode.pi.number"
+public handler setThumbPos(in pPos as Number)
+	if pPos < mStartValue then
+		put mStartValue into mThumbPos
+		setPercentVal(0)
+		return
+	else if pPos > mEndValue then
+		put mEndValue into mThumbPos
+		setPercentVal(1)
+		return
+   end if
+	put pPos into mThumbPos
+	variable tPerentage as Real
+	variable tTotal as Real
+	variable tNum as Real
+
+	put mEndValue - mStartValue into tTotal
+   put mThumbPos - mStartValue into tNum
+   put tNum / tTotal into tPerentage
+	-- put mThumbPos / mEndValue into tPerentage
+	setPercentVal(tPerentage)
+   OnGeometryChanged()
+	redraw all
+end handler
+private handler getThumbPos() returns Number
+		return mThumbPos
+end handler
+
 private variable mPercent as Real
 private variable mPercentVal as Real
 property percentageValue	 get getPercentVal	  set setPercentVal
@@ -108,6 +198,14 @@ public handler setPercentVal(in pPercent as Real)
 		put 1- mPercent into mPercentVal
 		put mPercent into mPercent
 	end if
+   --- recalulate the thumbPos value based on new percentage
+	variable tNum as Number
+	variable tPerentage as Real
+	put mEndValue - mStartValue into tNum
+	put mPercent * tNum into tNum
+	put mStartValue + tNum into mThumbPos
+	-- put mThumbPos - mStartValue into tNum
+   -- log [tNum]
    OnGeometryChanged()
 	redraw all
 end handler
@@ -151,7 +249,6 @@ public handler setThumbShadow(in pBoolean as Boolean)
    OnGeometryChanged()
 	redraw all
 end handler
-
 
 private variable mHoriz as Boolean
 property horizontalOrentation	 get mHoriz	  set setHorizOrientation
@@ -214,16 +311,30 @@ metadata backgroundColor.default is ""
 metadata backgroundColor.section is "Colors"
 metadata backgroundColor.label is "backgroundColor"
 
+
+private variable mHiliteColor as optional Color
+property hiliteColor          get getHiliteColor        set setHiliteColor
 metadata hiliteColor.editor is "com.livecode.pi.color"
-metadata hiliteColor.default is ""
+metadata hiliteColor.label is "Hilite Color"
 metadata hiliteColor.section is "Colors"
-metadata hiliteColor.label is "hiliteColor"
+metadata hiliteColor.default is ""
+private handler getHiliteColor() returns String
+	return colorToString(mLabelTextColor,false)
+end handler
+private handler setHiliteColor(in pColor as String)
+	if pColor is "" then
+		put nothing into mHiliteColor
+	else
+		put stringToColor(pColor) into mHiliteColor
+	end if
+	-- updatePaint(mPaintStyle)
+	redraw all
+end handler
 
 metadata focusColor.editor is "com.livecode.pi.color"
 metadata focusColor.default is ""
 metadata focusColor.section is "Colors"
 metadata focusColor.label is "focusColor"
-
 
 private variable mLabel as optional String
 property label              get mLabel              set setLabel
@@ -314,19 +425,6 @@ private handler setOuterBorderColor(in pColor as String)
 	redraw all
 end handler
 
-/*
-private variable mPaintStyle        as String
-property paintStyle         get mPaintStyle         set setPaintStyle
-metadata paintStyle.editor is "com.livecode.pi.enum"
-metadata paintStyle.label   is "Paint Style"
-metadata paintStyle.default is "solid color"
-metadata paintStyle.options is "solid color,linear gradient"
-private handler setPaintStyle(in pStyle as String)
-	-- updatePaint(pStyle)
-		redraw all
-end handler
-*/
-
 private variable mCornerRadius      as Real
 property cornerRadius       get mCornerRadius       set setCornerRadius
 metadata cornerRadius is "Corner Radius"
@@ -389,19 +487,17 @@ private variable mThumbWidth       as Real
 property thumbWidth        get mThumbWidth       set setThumbWidth
 metadata thumbWidth is "Thumb Width"
 metadata thumbWidth.section is "Basic"
-metadata thumbWidth.default is "40"
+metadata thumbWidth.default is "21"
 metadata thumbWidth.editor is "com.livecode.pi.integer"
-metadata thumbWidth.user_visible is "true"
 private handler setThumbWidth(in pWidth as optional Real)
     if pWidth is 0 or pWidth is nothing then
-		put 40 into mThumbWidth
-		put 40 into mThumbHeight
+		put 21 into mThumbWidth
+		put 21 into mThumbHeight
 	else
 		put pWidth into mThumbWidth
 		put pWidth into mThumbHeight
 	end if
     constrainPathToRect( rectangle [0,0,mThumbWidth,mThumbHeight], mThumbVector ) --- constrainPathToRect is in  com.livecode.library.widgetutils
-
 	redraw all
 end handler
 
@@ -425,8 +521,8 @@ private handler setThumbSVGPath(in pSVGPath as String)
 			 put the height of tThumbBounds into mThumbHeight
 			 put the width of tThumbBounds into mThumbWidth
 			 */
-		    put 40 into mThumbHeight
-		  	put 40 into mThumbWidth
+		    put 21 into mThumbHeight
+		  	put 21 into mThumbWidth
           constrainPathToRect( rectangle [0,0,mThumbWidth,mThumbWidth], mThumbVector ) --- constrainPathToRect is in  com.livecode.library.widgetutils
 
 		 else
@@ -444,12 +540,10 @@ private variable mThumbShape          as optional String
 property thumbShape          get mThumbShape           set setThumbShape
 metadata thumbShape.editor is "com.livecode.pi.enum"
 metadata thumbShape.label   is "Thumb Style"
-metadata thumbShape.default is "thumb"
+metadata thumbShape.default is "bean"
 metadata thumbShape.options is "none,pin,thumb,rectangular,notch,rectangle,bean,roundrect,oval,circle,custom"
 
 private handler setThumbShape(in pStyle as String)
-	variable tThumbBounds as optional Rectangle
-
     if pStyle is "none" then
     	put path "" into mThumbVector
 		put "" into mThumbSVGPath
@@ -476,8 +570,8 @@ private handler setThumbShape(in pStyle as String)
 		put "M37.25,15c0,9.09-6.28,14.85-18.51,14.99C6.51,30.13-.12,25.7,0,15,.13,4.3,7.78.13,18.74,0c12.09-.14,18.5,6.39,18.51,14.99Z" into mThumbSVGPath
 	 else if pStyle is "circle" then
 		 -- put circle path centered at point [16,16] with radius 16 into mThumbVector
-		put path "M 16 0 A 16 16 0 1 0 16 32 A 16 16 0 1 0 16 0" into mThumbVector
-		put "M 16 0 A 16 16 0 1 0 16 32 A 16 16 0 1 0 16 0" into mThumbSVGPath
+		put path "M16 0 A 16 16 0 1 0 16 32 A 16 16 0 1 0 16 0z" into mThumbVector
+		put "M16 0 A 16 16 0 1 0 16 32 A 16 16 0 1 0 16 0z" into mThumbSVGPath
 	else if pStyle is "notch" then
 		 -- put circle path centered at point [16,16] with radius 16 into mThumbVector
 		put path "M19.11,32.43c0,1.38-1.93,2.5-4.31,2.5H6.55c-2.38,0-4.31-1.12-4.31-2.5C2.24,32.43.03,24.49,0,17.51S2.24,2.5,2.24,2.5C2.24,1.12,4.17,0,6.55,0,6.55,0,10.74,0,10.77,0h4.03C17.18,0,19.11,1.12,19.11,2.5c0,0,2.53,7.91,2.23,15.01s-2.23,14.92-2.23,14.92ZM14.51,17.49c.1-4.91-.8-10.38-.8-10.38,0-.96-.69-1.73-1.55-1.73h-1.45s-1.51,0-1.51,0c-.85,0-1.55.77-1.55,1.73,0,0-.81,5.55-.8,10.38s.8,10.32.8,10.32c0,.96.69,1.73,1.55,1.73h2.96c.85,0,1.55-.77,1.55-1.73,0,0,.7-5.42.8-10.32Z" into mThumbVector
@@ -487,9 +581,17 @@ private handler setThumbShape(in pStyle as String)
 	end if
 	put pStyle into mThumbShape
 
-	put the bounding box of mThumbVector into tThumbBounds
-	put the height of tThumbBounds into mThumbHeight
-	put the width of tThumbBounds into mThumbWidth
+	if mThumbWidth is nothing then
+		setThumbWidth(21)
+		/*
+		variable tThumbBounds as optional Rectangle
+		put the bounding box of mThumbVector into tThumbBounds
+		put the height of tThumbBounds into mThumbHeight
+		put the width of tThumbBounds into mThumbWidth
+		*/
+	else
+		setThumbWidth( mThumbWidth )
+	end if
 
 	OnMouseMove()
 	OnGeometryChanged()
@@ -511,11 +613,14 @@ public handler OnSave(out rProp as Array)
 	if mThumbFillColor is not nothing then
 		put colorToString( mThumbFillColor, true ) into rProp["thumbFillColor"]
 	end if
+	if mLabelTextColor is not nothing then
+		put colorToString( mLabelTextColor, true ) into rProp["labelTextColor"]
+	end if
 	if mLabel is not nothing and mLabel is not the empty string then
 		put mLabel into rProp["label"]
 	end if
-	if mLabelTextColor is not nothing then
-		put colorToString( mLabelTextColor, true ) into rProp["labelTextColor"]
+	if mRailBarColor is not nothing then
+		put colorToString( mRailBarColor, true ) into rProp["railBarColor"]
 	end if
 	if mLabelTextFont is not nothing then
 		put mLabelTextFont into rProp["labelTextFont"]
@@ -523,44 +628,33 @@ public handler OnSave(out rProp as Array)
 	put mPercent into rProp["percentageValue"]
 	put mShowPercentageValue into rProp["showPercentageValue"]
 	put mOnlyFillWhileMoving into rProp["onlyFillWhileMoving"]
-
-	/*
-	put the bounding box of mThumbVector into tThumbBounds
-	put the height of tThumbBounds into mThumbHeight
-	put the width of tThumbBounds into mThumbWidth
-
-	mOnlyFillWhileMoving
-   mMouseDown
-	mRailBarColor
-   put (my height / 2) +mMargin into mTop
-   put (my width / 2) +mMargin into mFillBarRight
-    mFillBarRect
-	*/
+	put mThumbWidth into rProp["thumbWidth"]
 end handler
 public handler OnLoad(in rProp as Array)
 	put my script object into mE
+	put rProp["horizontalOrentation"] into mHoriz
 	if "margin" is not among the keys of rProp then
-		put 32 into mMargin
+		put 42 into mMargin
 	else
 		put rProp["margin"] into mMargin
-	end if
-
-	if "label" is not among the keys of rProp then
-		put nothing into mLabel
-	else
-		put rProp["label"] into mLabel
 	end if
 	if "cornerRadius" is not among the keys of rProp then
 		put 15 into mCornerRadius
 	else
 		put rProp["cornerRadius"] into mCornerRadius
 	end if
-	put rProp["horizontalOrentation"] into mHoriz
+		if "railBarColor" is not among the keys of rProp then
+		put color [ 0.5, 0.5, 0.5, 0.5 ] into mRailBarColor -- 50% Grey / 50% Opaque
+	else
+		put stringToColor( rProp["railBarColor"]) into mRailBarColor
+	end if
 	if "borderWidth" is not among the keys of rProp then
 		put 0 into mBorderWidth
 	else
 		put rProp["borderWidth"] into mBorderWidth
 	end if
+
+    put rProp["thumbWidth"] into mThumbWidth
 	setThumbShape( rProp["thumbShape"] )
 	if rProp["thumbShape"] is "custom" then
 		setThumbSVGPath( rProp["thumbSVGPath"] )
@@ -569,6 +663,12 @@ public handler OnLoad(in rProp as Array)
 		put the color of my foreground paint into mThumbFillColor
 	else
 		put stringToColor( rProp["thumbFillColor"]) into mThumbFillColor
+	end if
+
+	if "label" is not among the keys of rProp then
+		put nothing into mLabel
+	else
+		put rProp["label"] into mLabel
 	end if
 	if "labelTextColor" is not among the keys of rProp then
 		put the color of my foreground paint into mLabelTextColor
@@ -592,51 +692,48 @@ public handler OnLoad(in rProp as Array)
 	else
 		put stringToColor( rProp["hiliteColor"]) into mHiliteColor
 	end if
-
 	-- OnMouseMove()
 end handler
 
 --------------------------------------------------------------------------  Creating & Redrawing --------------------------------------------------------------------------------------
 
-variable mHiliteColor as optional Color
-
-private variable mMargin as Number
-property margin           get mMargin           set setMargin
-public handler setMargin(in pMargin as Number)
-	put pMargin into mMargin
-	OnGeometryChanged()
-	redraw all
-end handler
-
 private variable mE as ScriptObject
 public handler OnCreate()
 	put my script object into mE
+	setThumbShape("bean")
+    setThumbWidth( 21 )
+    setMargin(42)
+	/*
 	variable tThumbBounds as optional Rectangle
 	put "thumb" into mThumbShape
     put path "M19.957,39.487c7.348,0,13.839-10.771,15.539-14.278s2.589-11.26,2.589-13.175v-3.241c0-.025,0-3.392,0-3.392,0-1.915-1.159-3.467-2.589-3.467,0,0-8.308-.711-15.539-.687-7.231.024-15.453.687-15.453.687-1.43,0-2.589,1.552-2.589,3.467v6.633c0,1.915.648,9.725,2.589,13.175s6.865,14.278,15.453,14.278Z" into mThumbVector
 	put the bounding box of mThumbVector into tThumbBounds
 	put the height of tThumbBounds into mThumbHeight
-	put the width of tThumbBounds into mThumbWidth
-	put mThumbWidth into mMargin
+	put the width of tThumbBounds into mMargin
+	*/
+	-- put 21 into mThumbWidth
+	-- put 21 into mThumbHeight
    -- log [mMargin,mThumbHeight,mThumbWidth]
 
+   put color [ 0.5, 0.5, 0.5, 0.5 ] into mRailBarColor -- 50% Grey / 50% Opaque
+	put color [ 0.9, 0.9, 0.9, 1.0 ] into mThumbFillColor -- 50% Grey / 50% Opaque
 	 -- put the color of my highlight paint into mHiliteColor
 	 -- set the alpha of mHiliteColor to 1.0
 	 -- log [the alpha of mHiliteColor]
-	 put the color of my focus paint into mHiliteColor -- on macOS focus color is what we want not 'the highlight paint'
+	 -- put the color of my focus paint into mHiliteColor -- on macOS focus color is what we want not 'the highlight paint'
 
 	put 15 into mCornerRadius
 	put false into mOnlyFillWhileMoving
-   	put true into mHoriz
-   	put false into mMouseDown
+	put true into mHoriz
+	put false into mMouseDown
 
-   	put the name of my font into mLabelTextFont
-   	put "CenterTop" into mLabelAlign
-	--
-	put color [ 0.5, 0.5, 0.5, 0.5 ] into mRailBarColor -- 50% Grey / 50% Opaque
-	put color [ 0.9, 0.9, 0.9, 1.0 ] into mThumbFillColor -- 50% Grey / 50% Opaque
+	put the name of my font into mLabelTextFont
+	put "CenterTop" into mLabelAlign
 
 	-- create intitial 50% position bar
+	put 0 into mStartValue
+	put 100 into mEndValue
+	put 50 into mThumbPos
    put 0.5 into mPercentVal
    put 0.5 into mPercent
    put (my height / 2) +mMargin into mTop
@@ -673,7 +770,7 @@ public handler OnPaint()
 											with radius mCornerRadius on this canvas
     if mBorderWidth > 0 then
         if mForegroundColor is not nothing then
-        	set the paint of this canvas to solid paint with mHiliteColor
+        	set the paint of this canvas to solid paint with mForegroundColor
 		else -- inherit the color
 			set the paint of this canvas to my foreground paint
 		end if
@@ -684,28 +781,35 @@ public handler OnPaint()
      end if
 		--------------------- paint fill bar --------------------------
       if mFillBarRect is not nothing then
-         if mMouseDown then --- rendereed while dragging slider
-				set the paint of this canvas to solid paint with color [the red of mHiliteColor,the green of mHiliteColor,the blue of mHiliteColor, 1.0 ]
-				-- set the paint of this canvas to solid paint with color [the red of mHiliteColor,the green of mHiliteColor,the blue of mHiliteColor, 1.0 * mPercentVal  ]
-            fill rounded rectangle path of mFillBarRect with radius mCornerRadius on this canvas
+      		if mHiliteColor is not nothing then
+      	 	  set the paint of this canvas to solid paint with color [the red of mHiliteColor,the green of mHiliteColor,the blue of mHiliteColor, 1.0 ]
+			 -- set the paint of this canvas to solid paint with color [the red of mHiliteColor,the green of mHiliteColor,the blue of mHiliteColor, 1.0 * mPercentVal  ]
 			else
-				if mOnlyFillWhileMoving is false then --- rendereed while dragging
-					set the paint of this canvas to solid paint with color [the red of mHiliteColor,the green of mHiliteColor,the blue of mHiliteColor, 1.0 ]
-					fill rounded rectangle path of mFillBarRect with radius mCornerRadius on this canvas
-				end if
+			   variable tHiliteColor as optional Color
+			   put the color of my focus paint into tHiliteColor -- on macOS focus color is what we want not 'the highlight paint'
+      	 	   set the paint of this canvas to solid paint with color [the red of tHiliteColor,the green of tHiliteColor,the blue of tHiliteColor, 1.0 ]
 			end if
-			-------------------- PAINT THE THUMNB SVG PATH --------------------
-			put mThumbVector into tPath
-			translate tPath by [ mFillBarRight - (mThumbWidth/2) , tH/2 - (mThumbHeight/2) ]
-			if mThumbShadow is true then
+
+         if mMouseDown then --- rendereed while dragging slider
+            fill rounded rectangle path of mFillBarRect with radius mCornerRadius on this canvas
+		else
+			if mOnlyFillWhileMoving is false then --- rendereed while dragging
+				fill rounded rectangle path of mFillBarRect with radius mCornerRadius on this canvas
+			end if
+		end if
+		-------------------- PAINT THE THUMNB SVG PATH --------------------
+		put mThumbVector into tPath
+		translate tPath by [ mFillBarRight - (mThumbWidth/2) , tH/2 - (mThumbHeight/2) ]
+		if mThumbShadow is true then
 	         begin layer with outer shadow effect on this canvas
-				   set the paint of this canvas to solid paint with mThumbFillColor
-					fill tPath on this canvas
-	         end layer on this canvas
-			else
 				set the paint of this canvas to solid paint with mThumbFillColor
 				fill tPath on this canvas
-			end if
+	         end layer on this canvas
+		else
+			set the paint of this canvas to solid paint with mThumbFillColor
+			fill tPath on this canvas
+		end if
+
    end if
 
       ---------------------------------------------------------------------------------------- Vertical orientation ------------------------------
@@ -717,7 +821,7 @@ public handler OnPaint()
 		if mBorderWidth > 0 then
 			set the stroke width of this canvas to mBorderWidth
 			if mForegroundColor is not nothing then
-        		set the paint of this canvas to solid paint with mHiliteColor
+        		set the paint of this canvas to solid paint with mForegroundColor
 			else -- inherit the color
 				set the paint of this canvas to my foreground paint
 			end if
@@ -726,17 +830,22 @@ public handler OnPaint()
 							with radius mCornerRadius on this canvas
 		end if
       if mFillBarRect is not nothing then
-         if mMouseDown then --- rendereed while dragging slider
-				set the paint of this canvas to solid paint with color [the red of mHiliteColor,the green of mHiliteColor,the blue of mHiliteColor, 1.0  ]
-				--set the paint of this canvas to solid paint with color [the red of mHiliteColor,the green of mHiliteColor,the blue of mHiliteColor, mPercentVal  ]
+          if mHiliteColor is not nothing then
+      	 	  set the paint of this canvas to solid paint with color [the red of mHiliteColor,the green of mHiliteColor,the blue of mHiliteColor, 1.0 ]
+			 -- set the paint of this canvas to solid paint with color [the red of mHiliteColor,the green of mHiliteColor,the blue of mHiliteColor, 1.0 * mPercentVal  ]
+		  else
+			   variable tHiliteColor as optional Color
+			   put the color of my focus paint into tHiliteColor -- on macOS focus color is what we want not 'the highlight paint'
+      	 	   set the paint of this canvas to solid paint with color [the red of tHiliteColor,the green of tHiliteColor,the blue of tHiliteColor, 1.0 ]
+		  end if
+          if mMouseDown then --- rendereed while dragging slider
             fill rounded rectangle path of mFillBarRect with radius mCornerRadius on this canvas
-			else
-				if mOnlyFillWhileMoving is false then --- rendereed while dragging
-					set the paint of this canvas to solid paint with color [the red of mHiliteColor,the green of mHiliteColor,the blue of mHiliteColor, 1.0 ]
-					fill rounded rectangle path of mFillBarRect with radius mCornerRadius on this canvas
-				end if
+		  else
+			if mOnlyFillWhileMoving is false then --- rendereed while dragging
+				fill rounded rectangle path of mFillBarRect with radius mCornerRadius on this canvas
 			end if
-			--------------------- PAINT THE THUMNB SVG PATH  -------------------
+		  end if
+		    --------------------- PAINT THE THUMNB SVG PATH  -------------------
 			put mThumbVector into tPath
 			rotate tPath by -90 -- ROTATE PATH FOR VERTICAL
 			translate tPath by [tW/2 - (mThumbHeight/2), mTop + (mThumbWidth/2) ]
@@ -750,7 +859,7 @@ public handler OnPaint()
 				fill tPath on this canvas
 			end if
       end if
-    
+
    end if
 	--------------------------------------------------------------------------- LABEL TEXTS ---------
    if mLabel is not nothing and mLabel is not the empty string then
@@ -851,14 +960,15 @@ public handler OnPaint()
      else
         post "mouseRelease" with [the click button]
      end if
-     post "scrollbarEnd" with [mPercentVal]
+     post "scrollbarEnd" with [mThumbPos, mPercent]
      redraw all
    end handler
 
    public handler OnMouseDown()
       put true into mMouseDown
       post "mouseDown" to my script object with [the click button] -- to my script object
-      post "scrollbarBeginning" to my script object with [mPercentVal] -- to my script object
+      post "scrollbarBeginning" to my script object with [mThumbPos, mPercent] -- to my script object
+		-- post "scrollbarBeginning" to my script object with [mPercentVal] -- to my script object
       OnMouseMove()
    end handler
 
@@ -928,8 +1038,11 @@ public handler OnPaint()
 				put mPercentVal into mPercent
 				-- log [mPercentVal, mPercent]
          end if
-
-         post "scrollbarDrag" with [mPercent]
+			variable tNum as Number
+			put mEndValue - mStartValue into tNum
+			put mPercent * tNum into tNum
+			put mStartValue + tNum into mThumbPos
+         post "scrollbarDrag" with [mThumbPos, mPercent]
       end if
    redraw all
 end handler

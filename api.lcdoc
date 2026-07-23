@@ -2,7 +2,9 @@ Library: org.openxtalk.widget.oxtslider
 
 Type: widget
 
-Description: Widget
+Description:
+This Slider Widget is meant to be a drop-in replacement for
+the scrollBar type "classic control", but with greater customizability.
 
 author: Paul McClernan
 
@@ -32,13 +34,28 @@ Name: scrollbarBeginning
 
 Type: message
 
+Example:
+on scrollbarBeginning pThumbPos, pPercentage
+   put pThumbPos, pPercentage
+end scrollbarBeginning
+
 Name: scrollbarDrag
 
 Type: message
 
+Example:
+on scrollbarDrag pThumbPos, pPercentage
+   put pThumbPos, pPercentage
+end scrollbarDrag
+
 Name: scrollbarEnd
 
 Type: message
+
+Example:
+on scrollbarEnd pThumbPos, pPercentage
+   put pThumbPos, pPercentage
+end scrollbarEnd
 
 Name: backgroundColor
 

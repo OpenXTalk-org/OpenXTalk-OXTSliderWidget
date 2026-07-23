@@ -2,27 +2,30 @@ import module org.openxtalk.widget.oxtslider
   use com.livecode.canvas
   use com.livecode.library.widgetutils
   use com.livecode.engine
-  use com.livecode.arithmetic
   use com.livecode.widget
+  use com.livecode.arithmetic
   use com.livecode.binary
+  use com.livecode.string
   use com.livecode.list
   use com.livecode.logic
-  use com.livecode.string
   use com.livecode.type
   use com.livecode.char
   use com.livecode.array
   use com.livecode.byte
-  handler setPercentVal(in pPercent as Number) returns optional any
+  handler setMargin(in pMargin as Number) returns optional any
+  handler setStartValue(in pNumber as optional Number) returns optional any
+  handler setEndtValue(in pNumber as optional Number) returns optional any
+  handler setThumbPos(in pMargin as Number) returns optional any
+  handler setPercentVal(in pMargin as Number) returns optional any
   handler setShowPercentageValue(in pBoolean as Boolean) returns optional any
   handler setOnlyFillWhileMoving(in pBoolean as Boolean) returns optional any
   handler setThumbShadow(in pBoolean as Boolean) returns optional any
   handler setHorizOrientation(in pBoolean as Boolean) returns optional any
   handler getForegroundColor() returns String
   handler setForegroundColor(in pColor as String) returns nothing
-  handler setLabelAlign(in pLabel as String) returns optional any
+  handler setLabelAlign(in pColor as String) returns optional any
   handler OnSave(out rProp as Array) returns optional any
   handler OnLoad(in rProp as Array) returns optional any
-  handler setMargin(in pPercent as Number) returns optional any
   handler OnCreate() returns optional any
   handler OnOpen() returns optional any
   handler OnPaint() returns optional any

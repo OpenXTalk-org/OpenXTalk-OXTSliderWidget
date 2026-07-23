@@ -8,18 +8,35 @@
   <requires name="com.livecode.canvas"/>
   <requires name="com.livecode.library.widgetutils"/>
   <requires name="com.livecode.engine"/>
-  <requires name="com.livecode.arithmetic"/>
   <requires name="com.livecode.widget"/>
+  <requires name="com.livecode.arithmetic"/>
   <requires name="com.livecode.binary"/>
+  <requires name="com.livecode.string"/>
   <requires name="com.livecode.list"/>
   <requires name="com.livecode.logic"/>
-  <requires name="com.livecode.string"/>
   <requires name="com.livecode.type"/>
   <requires name="com.livecode.char"/>
   <requires name="com.livecode.array"/>
   <requires name="com.livecode.byte"/>
   <metadata key="preferredSize">400,90</metadata>
   <metadata key="svgicon">M28.057,3.454v2.284c0,.229-.172.413-.386.413h-11.867c-.556,1.32-1.789,2.245-3.226,2.245s-2.67-.925-3.226-2.245H1.599c-.213,0-.386-.185-.386-.413v-2.284c0-.229.172-.413.386-.413h7.754c.556-1.32,1.79-2.245,3.226-2.245s2.67.925,3.226,2.245h11.867c.213,0,.386.185.386.413ZM12.579,2.449c-1.104,0-2.002.963-2.002,2.146s.898,2.146,2.002,2.146,2.001-.963,2.001-2.146-.898-2.146-2.001-2.146Z</metadata>
+  <property name="margin" get="number" set="number"/>
+  <metadata key="margin.default">42</metadata>
+  <metadata key="margin.step">1</metadata>
+  <metadata key="margin.min">0</metadata>
+  <handler name="setMargin" parameters="in number" return="any"/>
+  <property name="startValue" get="optional number" set="optional number"/>
+  <metadata key="startValue.editor">com.livecode.pi.number</metadata>
+  <metadata key="startValue.default">0</metadata>
+  <handler name="setStartValue" parameters="in optional number" return="any"/>
+  <property name="endValue" get="optional number" set="optional number"/>
+  <metadata key="endValue.editor">com.livecode.pi.number</metadata>
+  <metadata key="endValue.default">100</metadata>
+  <handler name="setEndtValue" parameters="in optional number" return="any"/>
+  <property name="thumbPosition" get="number" set="number"/>
+  <property name="thumbPos" get="number" set="number"/>
+  <metadata key="humbPos.editor">com.livecode.pi.number</metadata>
+  <handler name="setThumbPos" parameters="in number" return="any"/>
   <property name="percentageValue" get="real" set="real"/>
   <metadata key="percentageValue.editor">com.livecode.pi.real</metadata>
   <handler name="setPercentVal" parameters="in real" return="any"/>
@@ -59,10 +76,11 @@
   <metadata key="backgroundColor.default"></metadata>
   <metadata key="backgroundColor.section">Colors</metadata>
   <metadata key="backgroundColor.label">backgroundColor</metadata>
+  <property name="hiliteColor" get="string" set="string"/>
   <metadata key="hiliteColor.editor">com.livecode.pi.color</metadata>
-  <metadata key="hiliteColor.default"></metadata>
+  <metadata key="hiliteColor.label">Hilite Color</metadata>
   <metadata key="hiliteColor.section">Colors</metadata>
-  <metadata key="hiliteColor.label">hiliteColor</metadata>
+  <metadata key="hiliteColor.default"></metadata>
   <metadata key="focusColor.editor">com.livecode.pi.color</metadata>
   <metadata key="focusColor.default"></metadata>
   <metadata key="focusColor.section">Colors</metadata>
@@ -129,9 +147,8 @@
   <property name="thumbWidth" get="real" set="optional real"/>
   <metadata key="thumbWidth">Thumb Width</metadata>
   <metadata key="thumbWidth.section">Basic</metadata>
-  <metadata key="thumbWidth.default">40</metadata>
+  <metadata key="thumbWidth.default">21</metadata>
   <metadata key="thumbWidth.editor">com.livecode.pi.integer</metadata>
-  <metadata key="thumbWidth.user_visible">true</metadata>
   <property name="thumbSVGPath" get="optional string" set="string"/>
   <metadata key="thumbSVGPath.editor">com.livecode.pi.string</metadata>
   <metadata key="thumbSVGPath.label">Custom Thumb SVGPath</metadata>
@@ -139,12 +156,10 @@
   <property name="thumbShape" get="optional string" set="string"/>
   <metadata key="thumbShape.editor">com.livecode.pi.enum</metadata>
   <metadata key="thumbShape.label">Thumb Style</metadata>
-  <metadata key="thumbShape.default">thumb</metadata>
+  <metadata key="thumbShape.default">bean</metadata>
   <metadata key="thumbShape.options">none,pin,thumb,rectangular,notch,rectangle,bean,roundrect,oval,circle,custom</metadata>
   <handler name="OnSave" parameters="out array" return="any"/>
   <handler name="OnLoad" parameters="in array" return="any"/>
-  <property name="margin" get="number" set="number"/>
-  <handler name="setMargin" parameters="in number" return="any"/>
   <handler name="OnCreate" parameters="" return="any"/>
   <handler name="OnOpen" parameters="" return="any"/>
   <handler name="OnPaint" parameters="" return="any"/>
